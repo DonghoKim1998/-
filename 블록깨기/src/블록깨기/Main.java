@@ -21,6 +21,7 @@ public class Main extends JFrame {
 	Robot robot;
 	StatePanel statePanel;
 	GamePanel gamePanel;
+	Stick stick;
 
 	// 위치 절대값 설정
 	private final int FRAME_WIDTH = 590;
@@ -54,9 +55,20 @@ public class Main extends JFrame {
 
 	// (2) 시작 메소드
 	public void go() {
-		// 시작 시, 커서 위치 변환
-		setMouseInitPosition();
+		// setMouseInitPosition(); // 시작 시, 커서 위치 설정 메소드
+		initAndAddPanels();
+	}
 
+	public void setMouseInitPosition() {
+		try {
+			robot = new Robot();
+			robot.mouseMove(950, 900);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void initAndAddPanels() {
 		// StatePanel 초기화, Frame에 추가
 		statePanel = new StatePanel();
 		statePanel.setLayout(null);
@@ -71,26 +83,14 @@ public class Main extends JFrame {
 		gamePanel.addMouseListener(new MyMouseListener());
 		this.getContentPane().add(gamePanel);
 	}
-
-	public void setMouseInitPosition() {
-		try {
-			robot = new Robot();
-			robot.mouseMove(950, 850);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	/* End of MainFrame */
 
-	/* Start of Panel Classes */
+	/* Start of Panels */
 	// StatePanel
 	public class StatePanel extends JPanel {
 		JLabel life, playingTime, score;
 
-		// 생성자: Panel 설정, JLabel 고정된 자리에 add()
 		public StatePanel() {
-			setLayout(null);
-
 			// life 설정
 			life = new JLabel("Life");
 			life.setBounds(50, 15, 50, 35);
@@ -130,17 +130,12 @@ public class Main extends JFrame {
 
 	// GamePanel
 	public class GamePanel extends JPanel {
-		Stick stick;
-
-		int mouse_X;
-
 		// 0.005초마다 게임패널 그려주는 Timer
 		Timer gamePanelTimer;
 		private final int gamePanelTimerDelay = 5;
 
-		// GamePanel 생성자
+		// 생성자
 		public GamePanel() {
-			// stick 객체 생성
 			stick = new Stick(stickImgURL, FRAME_WIDTH / 2, 90, 80);
 
 			gamePanelTimer = new Timer(gamePanelTimerDelay, new GamePanelTimerClass());
@@ -154,7 +149,7 @@ public class Main extends JFrame {
 
 			// stick 그리기
 			try {
-				stick.x = this.getMousePosition().x - 40;
+				stick.x = this.getMousePosition().x - 45;
 				stick.draw(g);
 			} catch (Exception e) {
 			}
@@ -162,7 +157,7 @@ public class Main extends JFrame {
 	}
 	/* End of Panel Classes */
 
-	/* Start of Timer Classes */
+	/* Start of Timers */
 	public class PlayingTimerClass implements ActionListener {
 		int time = 0;
 		int score = 0;
@@ -209,7 +204,7 @@ public class Main extends JFrame {
 			gamePanel.repaint();
 		}
 	}
-	/* End of Timer Classes */
+	/* End of Timers */
 
 	// 메인 메소드
 	public static void main(String[] args) {
