@@ -1,14 +1,24 @@
 package 블록깨기;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Robot;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Main extends JFrame {
 
+	Robot robot;
 	StatePanel statePanel;
 	GamePanel gamePanel;
 
@@ -18,8 +28,9 @@ public class Main extends JFrame {
 	private final int STATEPANEL_HEIGHT = 60;
 	private final int GAMEPANEL_HEIGHT = 820;
 
-	// 이미지
+	// 이미지 관련
 	ImageIcon ballImg = new ImageIcon("res/ball.png");
+	String stickImgURL = "res/stick.png";
 
 	// 생명을 표시하는 Life Image ArrayList
 	ArrayList<ImageIcon> lifeImgList;
@@ -43,6 +54,9 @@ public class Main extends JFrame {
 
 	// (2) 시작 메소드
 	public void go() {
+		// 시작 시, 커서 위치 변환
+		setMouseInitPosition();
+
 		// StatePanel 초기화, Frame에 추가
 		statePanel = new StatePanel();
 		this.getContentPane().add(statePanel);
@@ -50,6 +64,15 @@ public class Main extends JFrame {
 		// GamePanel 초기화 및 Frame에 추가
 		gamePanel = new GamePanel();
 		this.getContentPane().add(gamePanel);
+	}
+
+	public void setMouseInitPosition() {
+		try {
+			robot = new Robot();
+			robot.mouseMove(950, 850);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	/* End of MainFrame */
 
@@ -108,16 +131,12 @@ public class Main extends JFrame {
 
 	// GamePanel
 	public class GamePanel extends JPanel {
-//		// stick 이미지
-//		String stickImgURL = "res/stick.png";
-//		ImageIcon stickImg = new ImageIcon(stickImgURL);
-//
-//		// stick초기화
-//		Stick stick = new Stick(stickImgURL, FRAME_WIDTH / 2, 80, 80);
+		// stick 객체 생성
+		Stick stick = new Stick(stickImgURL, FRAME_WIDTH / 2, 80, 80);
 
 		// 0.005초마다 게임패널 그려주는 Timer
-		private final int gamePanelTimerDelay = 5;
 		Timer gamePanelTimer;
+		private final int gamePanelTimerDelay = 5;
 
 		// GamePanel 생성자
 		public GamePanel() {
@@ -141,12 +160,11 @@ public class Main extends JFrame {
 			g.fillRect(0, STATEPANEL_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT);
 
 			// stick 그리기
-//			try {
-//				stick.x = this.getMousePosition().x - 40;
-//				stick.draw(g);
-//			} catch (Exception e) {
-//			}
-//			;
+			try {
+				stick.x = this.getMousePosition().x - 40;
+				stick.draw(g);
+			} catch (Exception e) {
+			}
 		}
 	}
 	/* End of Panel Classes */
@@ -195,7 +213,10 @@ public class Main extends JFrame {
 	public class GamePanelTimerClass implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//gamePanel.repaint();
+			/*
+			 * 오류: gamePanel.repaint() 선언 시 오류발생 !!!!!!!!!!!!!!!
+			 */
+			// gamePanel.repaint();
 		}
 	}
 	/* End of Timer Classes */
