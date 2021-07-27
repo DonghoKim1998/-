@@ -23,10 +23,10 @@ public class Main extends JFrame {
 	GamePanel gamePanel;
 
 	// 위치 절대값 설정
-	private final int FRAME_WIDTH = 600;
+	private final int FRAME_WIDTH = 590;
 	private final int FRAME_HEIGHT = 880;
 	private final int STATEPANEL_HEIGHT = 60;
-	private final int GAMEPANEL_HEIGHT = 820;
+	private final int GAMEPANEL_HEIGHT = 780;
 
 	// 이미지 관련
 	ImageIcon ballImg = new ImageIcon("res/ball.png");
@@ -59,10 +59,16 @@ public class Main extends JFrame {
 
 		// StatePanel 초기화, Frame에 추가
 		statePanel = new StatePanel();
+		statePanel.setLayout(null);
+		statePanel.setBounds(0, 0, FRAME_WIDTH, STATEPANEL_HEIGHT);
+		statePanel.addMouseListener(new MyMouseListener());
 		this.getContentPane().add(statePanel);
 
 		// GamePanel 초기화 및 Frame에 추가
 		gamePanel = new GamePanel();
+		gamePanel.setLayout(null);
+		gamePanel.setBounds(0, 60, FRAME_WIDTH, GAMEPANEL_HEIGHT);
+		gamePanel.addMouseListener(new MyMouseListener());
 		this.getContentPane().add(gamePanel);
 	}
 
@@ -83,8 +89,7 @@ public class Main extends JFrame {
 
 		// 생성자: Panel 설정, JLabel 고정된 자리에 add()
 		public StatePanel() {
-			// panel 설정 메소드
-			setStatePanel();
+			setLayout(null);
 
 			// life 설정
 			life = new JLabel("Life");
@@ -100,7 +105,7 @@ public class Main extends JFrame {
 
 			// score 설정
 			score = new JLabel("Score");
-			score.setBounds(415, 15, 170, 35);
+			score.setBounds(410, 15, 170, 35);
 			score.setFont(new Font("Rix짱구 M", Font.ITALIC, 30));
 			add(score);
 
@@ -110,12 +115,6 @@ public class Main extends JFrame {
 				lifeImgList.add(ballImg);
 
 			playingTimer = new Timer(PLAYINGTIMER_DELAY, new PlayingTimerClass());
-		}
-
-		// StatePanel 설정 메소드
-		public void setStatePanel() {
-			setLayout(null);
-			setBounds(0, 0, FRAME_WIDTH, STATEPANEL_HEIGHT);
 		}
 
 		public void paintComponent(Graphics g) {
@@ -131,8 +130,9 @@ public class Main extends JFrame {
 
 	// GamePanel
 	public class GamePanel extends JPanel {
-		// stick 객체 생성
-		Stick stick = new Stick(stickImgURL, FRAME_WIDTH / 2, 80, 80);
+		Stick stick;
+
+		int mouse_X;
 
 		// 0.005초마다 게임패널 그려주는 Timer
 		Timer gamePanelTimer;
@@ -140,24 +140,17 @@ public class Main extends JFrame {
 
 		// GamePanel 생성자
 		public GamePanel() {
-			setGamePanel();
+			// stick 객체 생성
+			stick = new Stick(stickImgURL, FRAME_WIDTH / 2, 90, 80);
 
 			gamePanelTimer = new Timer(gamePanelTimerDelay, new GamePanelTimerClass());
 			gamePanelTimer.start();
 		}
 
-		// GamePanel 초기화 메소드
-		public void setGamePanel() {
-			setLayout(null);
-			setBounds(0, 0, FRAME_WIDTH, GAMEPANEL_HEIGHT);
-
-			addMouseListener(new MyMouseListener());
-		}
-
 		public void paintComponent(Graphics g) {
 			// GamePanel 배경 그리기
 			g.setColor(Color.white);
-			g.fillRect(0, STATEPANEL_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT);
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
 			// stick 그리기
 			try {
@@ -183,7 +176,7 @@ public class Main extends JFrame {
 
 			// Score 설정
 			score += 1;
-			statePanel.score.setText("Score      " + String.format("%d", score));
+			statePanel.score.setText("Score  " + String.format("%d", score));
 		}
 	}
 
@@ -213,10 +206,7 @@ public class Main extends JFrame {
 	public class GamePanelTimerClass implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			/*
-			 * 오류: gamePanel.repaint() 선언 시 오류발생 !!!!!!!!!!!!!!!
-			 */
-			// gamePanel.repaint();
+			gamePanel.repaint();
 		}
 	}
 	/* End of Timer Classes */
