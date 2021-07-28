@@ -1,13 +1,17 @@
 package 블록깨기;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -22,16 +26,23 @@ public class Main extends JFrame {
 	StatePanel statePanel;
 	GamePanel gamePanel;
 	Stick stick;
+	Ball ball;
 
 	// 위치 절대값 설정
 	private final int FRAME_WIDTH = 590;
 	private final int FRAME_HEIGHT = 880;
 	private final int STATEPANEL_HEIGHT = 60;
 	private final int GAMEPANEL_HEIGHT = 780;
+	private final int INIT_MOUSE_X = 950;
+	private final int INIT_MOUSE_Y = 890;
+	private final int DEADLINE_HEIGHT = 760;
 
 	// 이미지 관련
-	ImageIcon ballImg = new ImageIcon("res/ball.png");
 	String stickImgURL = "res/stick.png";
+	String ballImgURL = "res/ball.png";
+	ImageIcon ballImg = new ImageIcon(ballImgURL);
+	ImageIcon backGroundImg = new ImageIcon("res/game_background.png");
+	ImageIcon deadLine = new ImageIcon("res/deadLine.png");
 
 	// 생명을 표시하는 Life Image ArrayList
 	ArrayList<ImageIcon> lifeImgList;
@@ -40,8 +51,14 @@ public class Main extends JFrame {
 	// 진행 시간 관련 Timer
 	Timer playingTimer;
 	private final int PLAYINGTIMER_DELAY = 1000;
+	// 0.005초마다 게임패널 그려주는 Timer
+	Timer gamePanelTimer;
+	private final int gamePanelTimerDelay = 5;
+	// 게임 시작 전 공 위치를 계속 그려주기 위한 Timer
+	Timer initBallPaintTimer;
+	private final int initBallPatinTimerDelay = 1;
 
-	/* Start of MainFrame */
+	/* 메인프레임 시작 */
 	// (1) 생성자: Frame 설정
 	public Main() {
 		this.setTitle("블록깨기");
@@ -55,17 +72,23 @@ public class Main extends JFrame {
 
 	// (2) 시작 메소드
 	public void go() {
-		// setMouseInitPosition(); // 시작 시, 커서 위치 설정 메소드
+		setMouse();
 		initAndAddPanels();
 	}
 
-	public void setMouseInitPosition() {
+	// 마우스 관련 메소드
+	public void setMouse() {
+		// 실행 시 마우스 위치 설정
 		try {
 			robot = new Robot();
-			robot.mouseMove(950, 900);
+			robot.mouseMove(INIT_MOUSE_X, INIT_MOUSE_Y);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		// 마우스커서 안보이게 설정
+		this.setCursor(this.getToolkit().createCustomCursor(new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB),
+				new Point(0, 0), "null"));
 	}
 
 	public void initAndAddPanels() {
@@ -83,9 +106,9 @@ public class Main extends JFrame {
 		gamePanel.addMouseListener(new MyMouseListener());
 		this.getContentPane().add(gamePanel);
 	}
-	/* End of MainFrame */
+	/* 메인 프레임 끝 */
 
-	/* Start of Panels */
+	/* 패널 클래스 시작 */
 	// StatePanel
 	public class StatePanel extends JPanel {
 		JLabel life, playingTime, score;
@@ -130,22 +153,22 @@ public class Main extends JFrame {
 
 	// GamePanel
 	public class GamePanel extends JPanel {
-		// 0.005초마다 게임패널 그려주는 Timer
-		Timer gamePanelTimer;
-		private final int gamePanelTimerDelay = 5;
-
-		// 생성자
 		public GamePanel() {
-			stick = new Stick(stickImgURL, FRAME_WIDTH / 2, 90, 80);
+			stick = new Stick(stickImgURL, FRAME_WIDTH / 2);
+			ball = new Ball(ballImgURL, stick.x - 29, 700);
+
+			initBallPaintTimer = new Timer(initBallPatinTimerDelay, new InitBallPaintClass());
+			initBallPaintTimer.start();
 
 			gamePanelTimer = new Timer(gamePanelTimerDelay, new GamePanelTimerClass());
-			gamePanelTimer.start();
+			// gamePanelTimer.start();
 		}
 
 		public void paintComponent(Graphics g) {
 			// GamePanel 배경 그리기
-			g.setColor(Color.white);
-			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+			g.drawImage(backGroundImg.getImage(), 0, 0, FRAME_WIDTH, GAMEPANEL_HEIGHT, null);
+			// deadLine 그리기
+			g.drawImage(deadLine.getImage(), 0, DEADLINE_HEIGHT, FRAME_WIDTH, 5, null);
 
 			// stick 그리기
 			try {
@@ -153,11 +176,13 @@ public class Main extends JFrame {
 				stick.draw(g);
 			} catch (Exception e) {
 			}
+
+			ball.draw(g);
 		}
 	}
-	/* End of Panel Classes */
+	/* 패널 클래스 끝 */
 
-	/* Start of Timers */
+	/* Timer 클래스 시작 */
 	public class PlayingTimerClass implements ActionListener {
 		int time = 0;
 		int score = 0;
@@ -178,6 +203,9 @@ public class Main extends JFrame {
 	public class MyMouseListener implements MouseListener {
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			initBallPaintTimer.stop();
+
+			gamePanelTimer.start();
 			playingTimer.start();
 		}
 
@@ -201,10 +229,19 @@ public class Main extends JFrame {
 	public class GamePanelTimerClass implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			ball.move();
 			gamePanel.repaint();
 		}
 	}
-	/* End of Timers */
+
+	public class InitBallPaintClass implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			ball.x = stick.x + 29;
+		}
+
+	}
+	/* Timer 클래스 끝 */
 
 	// 메인 메소드
 	public static void main(String[] args) {

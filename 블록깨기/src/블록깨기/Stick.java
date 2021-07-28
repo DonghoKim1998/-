@@ -6,14 +6,12 @@ import java.awt.Point;
 import javax.swing.ImageIcon;
 
 public class Stick extends ImageIcon {
-	int x, width, height;
-	private final int y = 700;
+	int x;
+	private final int width = 90, height = 80, y = 690;
 
-	public Stick(String img, int x, int width, int height) {
+	public Stick(String img, int x) {
 		super(img);
 		this.x = x;
-		this.width = width;
-		this.height = height;
 	}
 
 	public void draw(Graphics g) {
