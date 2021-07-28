@@ -7,11 +7,15 @@ import javax.swing.ImageIcon;
 
 public class Stick extends ImageIcon {
 	int x;
-	private final int width = 90, height = 80, y = 690;
+	public final int width = 90, height = 10, y = 690;
 
 	public Stick(String img, int x) {
 		super(img);
 		this.x = x;
+	}
+
+	public Point getPoint() {
+		return new Point(this.x, this.y);
 	}
 
 	public void draw(Graphics g) {

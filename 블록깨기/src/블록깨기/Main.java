@@ -25,17 +25,17 @@ public class Main extends JFrame {
 	Robot robot;
 	StatePanel statePanel;
 	GamePanel gamePanel;
-	Stick stick;
+	static Stick stick;
 	Ball ball;
 
 	// 위치 절대값 설정
-	private final int FRAME_WIDTH = 590;
-	private final int FRAME_HEIGHT = 880;
-	private final int STATEPANEL_HEIGHT = 60;
-	private final int GAMEPANEL_HEIGHT = 780;
-	private final int INIT_MOUSE_X = 950;
-	private final int INIT_MOUSE_Y = 890;
-	private final int DEADLINE_HEIGHT = 760;
+	final static int FRAME_WIDTH = 590;
+	final int FRAME_HEIGHT = 880;
+	final int STATEPANEL_HEIGHT = 60;
+	final int GAMEPANEL_HEIGHT = 780;
+	final int INIT_MOUSE_X = 950;
+	final int INIT_MOUSE_Y = 890;
+	final static int DEADLINE_HEIGHT = 760;
 
 	// 이미지 관련
 	String stickImgURL = "res/stick.png";
@@ -53,9 +53,9 @@ public class Main extends JFrame {
 	private final int PLAYINGTIMER_DELAY = 1000;
 	// 0.005초마다 게임패널 그려주는 Timer
 	Timer gamePanelTimer;
-	private final int gamePanelTimerDelay = 5;
+	private final int gamePanelTimerDelay = 1;
 	// 게임 시작 전 공 위치를 계속 그려주기 위한 Timer
-	Timer initBallPaintTimer;
+	Timer initPaintTimer;
 	private final int initBallPatinTimerDelay = 1;
 
 	/* 메인프레임 시작 */
@@ -140,6 +140,7 @@ public class Main extends JFrame {
 			playingTimer = new Timer(PLAYINGTIMER_DELAY, new PlayingTimerClass());
 		}
 
+		// StatePanel 그리는 메소드
 		public void paintComponent(Graphics g) {
 			// StatePanel 배경 그리기
 			g.setColor(Color.yellow);
@@ -155,15 +156,15 @@ public class Main extends JFrame {
 	public class GamePanel extends JPanel {
 		public GamePanel() {
 			stick = new Stick(stickImgURL, FRAME_WIDTH / 2);
-			ball = new Ball(ballImgURL, stick.x - 29, 700);
+			ball = new Ball(ballImgURL, FRAME_WIDTH / 2, stick.y - 20);
 
-			initBallPaintTimer = new Timer(initBallPatinTimerDelay, new InitBallPaintClass());
-			initBallPaintTimer.start();
+			initPaintTimer = new Timer(initBallPatinTimerDelay, new InitPaintClass());
+			initPaintTimer.start();
 
 			gamePanelTimer = new Timer(gamePanelTimerDelay, new GamePanelTimerClass());
-			// gamePanelTimer.start();
 		}
 
+		// GamePanel 그리는 메소드
 		public void paintComponent(Graphics g) {
 			// GamePanel 배경 그리기
 			g.drawImage(backGroundImg.getImage(), 0, 0, FRAME_WIDTH, GAMEPANEL_HEIGHT, null);
@@ -177,6 +178,7 @@ public class Main extends JFrame {
 			} catch (Exception e) {
 			}
 
+			// ball 그리기
 			ball.draw(g);
 		}
 	}
@@ -203,7 +205,7 @@ public class Main extends JFrame {
 	public class MyMouseListener implements MouseListener {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			initBallPaintTimer.stop();
+			initPaintTimer.stop();
 
 			gamePanelTimer.start();
 			playingTimer.start();
@@ -229,15 +231,19 @@ public class Main extends JFrame {
 	public class GamePanelTimerClass implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			ball.move();
+			/*
+			 * 밑 게임 종료부분 수정 필요 게임 종료 패널뜨게끔
+			 */
+			if (!ball.move())
+				System.exit(1);
 			gamePanel.repaint();
 		}
 	}
 
-	public class InitBallPaintClass implements ActionListener {
+	public class InitPaintClass implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			ball.x = stick.x + 29;
+			ball.x = stick.x + 33;
 			gamePanel.repaint();
 		}
 
