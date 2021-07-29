@@ -180,6 +180,13 @@ public class Main extends JFrame {
 
 			// ball 그리기
 			ball.draw(g);
+
+			/*
+			 * 블럭 위치 가이드라인
+			 */
+			g.setColor(Color.white);
+			g.drawLine(0, 100, FRAME_WIDTH, 100);
+			g.drawLine(0, 350, FRAME_WIDTH, 350);
 		}
 	}
 	/* 패널 클래스 끝 */
