@@ -243,9 +243,12 @@ public class Main extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (!ball.move()) {
-				if (lifeCount == 0)
-					System.exit(1); ////////////////////////////// 종료 패널 만들어서 띄우기 !! /////////////
+				if (lifeCount == 0) {
+					////////////////////////////// 종료 패널 만들어서 띄우기 !! /////////////
+					System.exit(1);
+				}
 
+				// 떨어져서 lifeImgList--, lifeCount--
 				lifeImgList.remove(lifeCount - 1);
 				lifeCount--;
 
@@ -253,6 +256,8 @@ public class Main extends JFrame {
 				if (lifeCount == 0)
 					statePanel.life.setForeground(Color.red);
 
+				// statePanel, gamePanel 그려주기 멈춤
+				// initPaint 시작
 				statePanelTimer.stop();
 				gamePanelTimer.stop();
 				initPaintTimer.start();
@@ -260,6 +265,7 @@ public class Main extends JFrame {
 				ball.y = stick.y - 20;
 			}
 
+			// 안떨어지면 statePanel, gamePanel 계속 그려줌
 			statePanel.repaint();
 			gamePanel.repaint();
 		}
