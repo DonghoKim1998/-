@@ -9,7 +9,7 @@ public class Ball extends ImageIcon {
 	Stick stick = Main.stick;
 
 	int x, y;
-	int moveX, moveY = -7; // 20까지는 인식 가능
+	int moveX, moveY = -6; // 20까지는 인식 가능
 	private final int width = 22, height = 22;
 
 	public Ball(String img, int x, int y) {
@@ -20,9 +20,9 @@ public class Ball extends ImageIcon {
 		// 공의 초기 방향(왼쪽 or 오른쪽을 정해줌)
 		// 0이면 -1(왼쪽), 1이면 1(오른쪽)
 		if ((int) (Math.random() * 2) == 0)
-			this.moveX = -4;
+			this.moveX = -5;
 		else
-			this.moveX = 4;
+			this.moveX = 5;
 	}
 
 	public boolean move() {
@@ -88,6 +88,10 @@ public class Ball extends ImageIcon {
 
 	public double getDistance(Point p) {
 		return Math.sqrt(Math.pow(this.x - p.x, 2) + Math.pow(this.y - p.y, 2));
+	}
+
+	public Point getCenterPoint() {
+		return new Point(this.x + this.width / 2, this.y + this.height / 2);
 	}
 
 	public void draw(Graphics g) {
