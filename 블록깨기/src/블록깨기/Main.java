@@ -37,8 +37,6 @@ public class Main extends JFrame {
 	final int INIT_MOUSE_Y = 890;
 	final static int DEADLINE_HEIGHT = 760;
 
-	static int lifeCount = 2;
-
 	// 이미지 관련
 	String stickImgURL = "res/stick.png";
 	String ballImgURL = "res/ball.png";
@@ -48,7 +46,7 @@ public class Main extends JFrame {
 	ImageIcon statePanelBackImg = new ImageIcon("res/statePanelBackImg.png");
 
 	// 생명을 표시하는 Life Image ArrayList
-	static ArrayList<ImageIcon> lifeImgList;
+	ArrayList<ImageIcon> lifeImgList;
 	// Block을 위한 ArrayList
 	ArrayList<ArrayList<Block>> blockList;
 	ArrayList<Block> tempList;
@@ -240,13 +238,11 @@ public class Main extends JFrame {
 
 	// 게임 시작하면 시작하는 Timer 클래스
 	public class GamePanelTimerClass implements ActionListener {
-		int lifeCount = Main.lifeCount;
+		int lifeCount = 2;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (!ball.move()) {
-				System.out.println(lifeImgList.size());
-
 				if (lifeCount == 0)
 					System.exit(1); ////////////////////////////// 종료 패널 만들어서 띄우기 !! /////////////
 

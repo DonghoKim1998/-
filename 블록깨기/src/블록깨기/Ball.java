@@ -9,7 +9,7 @@ public class Ball extends ImageIcon {
 	Stick stick = Main.stick;
 
 	int x, y;
-	int moveX, moveY = -6; // 20까지는 인식 가능
+	int moveX, moveY = -14; // 20까지는 인식 가능
 	private final int width = 22, height = 22;
 
 	public Ball(String img, int x, int y) {
