@@ -262,6 +262,7 @@ public class Main extends JFrame {
 				gamePanelTimer.stop();
 				initPaintTimer.start();
 
+				// 시작 전 공 위치 설정
 				ball.y = stick.y - 20;
 			}
 
