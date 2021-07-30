@@ -57,24 +57,29 @@ public class Block extends ImageIcon {
 		this.setImage(blockImg.getImage());
 	}
 
-//	public boolean isBreak() {
-//		if()
-//	}
+	public boolean isBreak(Ball ball) {
+		double distance = getDistanceWithBall(ball);
 
-	public String toString() {
-		return "" + this.x + "," + this.y;
+		if (distance <= 23)
+			return true;
+
+		return false;
 	}
 
-//	public double getDistanceWithBall(Ball ball) {
-//		return 
-//	}
+	public double getDistanceWithBall(Ball ball) {
+		return Math.sqrt(Math.pow((this.getCenterPoint().x - ball.getCenterPoint().x), 2)
+				+ Math.pow((this.getCenterPoint().y - ball.getCenterPoint().y), 2));
+	}
 
 	public Point getCenterPoint() {
 		return new Point(this.x + this.width / 2, this.y + this.height / 2);
 	}
 
+	public String toString() {
+		return "" + this.x + "," + this.y;
+	}
+
 	public void draw(Graphics g) {
 		g.drawImage(this.getImage(), this.x, this.y, this.width, this.height, null);
 	}
-
 }

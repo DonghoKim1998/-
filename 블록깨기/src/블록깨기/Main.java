@@ -26,7 +26,7 @@ public class Main extends JFrame {
 	StatePanel statePanel;
 	GamePanel gamePanel;
 	Ball ball;
-	static Stick stick;
+	Stick stick;
 
 	// 위치 절대값 설정
 	final static int FRAME_WIDTH = 560;
@@ -50,6 +50,7 @@ public class Main extends JFrame {
 	// Block을 위한 ArrayList
 	ArrayList<ArrayList<Block>> blockList;
 	ArrayList<Block> tempList;
+	ArrayList<Block> toRemoveBlock = new ArrayList<Block>();
 
 	// Timer
 	// 진행 시간 관련 Timer
@@ -162,20 +163,16 @@ public class Main extends JFrame {
 	public class GamePanel extends JPanel {
 		public GamePanel() {
 			stick = new Stick(stickImgURL, FRAME_WIDTH / 2);
-			ball = new Ball(ballImgURL, FRAME_WIDTH / 2, stick.y - 20);
+			ball = new Ball(ballImgURL, FRAME_WIDTH / 2, stick.y - 20, stick);
 
 			// blockList: 2차원 배열 (블럭 저장)
 			// tempList: 1차원 <Block> 배열 (blockList에 삽입)
 			blockList = new ArrayList<ArrayList<Block>>();
 
-			//
 			for (int i = 0; i < 6; i++) {
 				tempList = new ArrayList<Block>();
-
 				for (int j = 0; j < 10; j++)
 					tempList.add(new Block((j * 51) + 10, (i * 24) + 34));
-
-				// (3) blockList에 새로 만들어진 tempList 삽입
 				blockList.add(tempList);
 			}
 
@@ -265,6 +262,27 @@ public class Main extends JFrame {
 				// 시작 전 공 위치 설정
 				ball.y = stick.y - 20;
 			}
+
+			// 모든 block에 대해 공과 부딪혔는지 판단
+			// 부딪혔을 경우 공 방향전환 해주고 해당 block 객체 삭제
+			for (ArrayList<Block> firstDimension : blockList) {
+				for (Block block : firstDimension) {
+					if (block.isBreak(ball)) {
+						ball.moveY *= -1;
+						toRemoveBlock.add(block);
+					}
+				}
+
+				for (Block Removeblock : toRemoveBlock)
+					firstDimension.remove(Removeblock);
+			}
+
+//			System.out.println(blockList);
+//
+//			for (Block block : toRemoveBlock) {
+//				System.out.println(block);
+//				firstDimension.remove(block);
+//			}
 
 			// 안떨어지면 statePanel, gamePanel 계속 그려줌
 			statePanel.repaint();
