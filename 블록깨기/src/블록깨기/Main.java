@@ -202,36 +202,6 @@ public class Main extends JFrame {
 			for (ArrayList<Block> firstDimension : blockList)
 				for (Block block : firstDimension)
 					block.draw(g);
-			
-			g.setColor(Color.red);
-			g.drawLine(stick.x, 0, stick.x, GAMEPANEL_HEIGHT);
-			g.setColor(Color.orange);
-			g.drawLine(stick.x + 12, 0, stick.x + 12, GAMEPANEL_HEIGHT);
-			g.setColor(Color.yellow);
-			g.drawLine(stick.x + 24, 0, stick.x + 24, GAMEPANEL_HEIGHT);
-			g.setColor(Color.green);
-			g.drawLine(stick.x + 36, 0, stick.x + 36, GAMEPANEL_HEIGHT);
-			g.setColor(Color.blue);
-			g.drawLine(stick.x + 48, 0, stick.x + 48, GAMEPANEL_HEIGHT);
-			g.setColor(Color.cyan);
-			g.drawLine(stick.x + 60, 0, stick.x + 60, GAMEPANEL_HEIGHT);
-			g.setColor(Color.pink);
-			g.drawLine(stick.x + 72, 0, stick.x + 72, GAMEPANEL_HEIGHT);
-			g.setColor(Color.darkGray);
-			g.drawLine(stick.x + 84, 0, stick.x + 84, GAMEPANEL_HEIGHT);
-
-//			if (stick.x + 1 <= ball.x && ball.x < stick.x + 13)
-//				moveX = -3;
-//			if (stick.x + 13 <= ball.x && ball.x < stick.x + 25)
-//				moveX = -1;
-//			if (stick.x + 25 <= ball.x && ball.x < stick.x + 37)
-//				moveX = 0;
-//			if (stick.x + 37 <= ball.x && ball.x < stick.x + 49)
-//				moveX = -1;
-//			if (stick.x + 49 <= ball.x && ball.x < stick.x + 61)
-//				moveX = 3;
-//			if (stick.x + 61 <= ball.x && ball.x < stick.x + 73)
-//				moveX = 5;
 
 			// ball 그리기
 			ball.draw(g);
@@ -291,13 +261,11 @@ public class Main extends JFrame {
 			}
 
 			// 모든 block에 대해 공과 부딪혔는지 판단
-			// 부딪혔을 경우 공 방향전환 해주고 해당 block 객체 삭제
+			// 부딪혔을 경우 해당 block 객체 삭제
 			for (ArrayList<Block> firstDimension : blockList) {
 				for (Block block : firstDimension) {
-					if (block.isBreak(ball)) {
-						ball.moveY *= -1;
+					if (block.isBreak(ball))
 						toRemoveBlock.add(block);
-					}
 				}
 
 				for (Block Removeblock : toRemoveBlock)

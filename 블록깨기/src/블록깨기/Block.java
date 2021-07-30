@@ -60,8 +60,42 @@ public class Block extends ImageIcon {
 	public boolean isBreak(Ball ball) {
 		double distance = getDistanceWithBall(ball);
 
-		if (distance <= 23)
+		// 부딪힘
+		if (23 < distance && distance <= 36) {
+			// 윗면 || 아랫면
+			if (ball.y < this.y || ball.y > this.y)
+				ball.moveY *= -1;
+
+			// 우측면 || 좌측면
+			if (ball.x > this.x + width || ball.x < this.x)
+				ball.moveX *= -1;
+
+			// 1시 대각선
+			if (ball.getCenterX() > this.x + this.width && ball.getCenterY() < this.y) {
+				ball.moveX = 3;
+				ball.moveY = -3;
+			}
+
+			// 5시 대각선
+			if (ball.getCenterX() > this.x + this.width && ball.getCenterY() > this.y + this.height) {
+				ball.moveX = 3;
+				ball.moveY = 3;
+			}
+
+			// 7시 대각선
+			if (ball.getCenterX() < this.x && ball.getCenterY() < this.y + this.height) {
+				ball.moveX = -3;
+				ball.moveY = 3;
+			}
+
+			// 11시 대각선
+			if (ball.getCenterX() < this.x && ball.getCenterY() < this.y) {
+				ball.moveX = -3;
+				ball.moveY = -3;
+			}
+
 			return true;
+		}
 
 		return false;
 	}
@@ -73,6 +107,14 @@ public class Block extends ImageIcon {
 
 	public Point getCenterPoint() {
 		return new Point(this.x + this.width / 2, this.y + this.height / 2);
+	}
+
+	public int getCenterX() {
+		return this.x + this.width / 2;
+	}
+
+	public int getCenterY() {
+		return this.y + this.height / 2;
 	}
 
 	public String toString() {

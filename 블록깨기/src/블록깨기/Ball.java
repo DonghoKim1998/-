@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 public class Ball extends ImageIcon {
 	Stick stick;
 	int x, y;
-	int moveX, moveY = -10; // 20까지는 인식 가능
+	int moveX, moveY = -6; // 20까지는 인식 가능 // 초기 7
 	final int width = 22, height = 22;
 
 	public Ball(String img, int x, int y, Stick stick) {
@@ -86,6 +86,14 @@ public class Ball extends ImageIcon {
 
 	public Point getCenterPoint() {
 		return new Point(this.x + this.width / 2, this.y + this.height / 2);
+	}
+
+	public int getCenterX() {
+		return this.x + this.width / 2;
+	}
+
+	public int getCenterY() {
+		return this.y + this.height / 2;
 	}
 
 	public void draw(Graphics g) {
