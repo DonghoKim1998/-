@@ -41,6 +41,10 @@ public class Ball extends ImageIcon {
 	// 벽/Block/Stick과 부딪혔는지 판단하며
 	// 부딪히면 방향(moveX/moveY)를 바꿔주는 메소드
 	public void isCrash() {
+		// 우측벽에 끼는 경우 빼주기
+		if (Main.FRAME_WIDTH - 30 < this.x && this.x <= Main.FRAME_WIDTH)
+			this.moveX = -6;
+
 		if (this.x <= 0 || this.x >= Main.FRAME_WIDTH - 45)
 			this.moveX *= -1;
 		if (this.y <= 0)
@@ -50,18 +54,20 @@ public class Ball extends ImageIcon {
 		if (isCollisionWithStick()) {
 			if (stick.x - 12 < this.x && this.x <= stick.x)
 				moveX = -speed;
-			if (stick.x < this.x && this.x < stick.x + 12)
-				moveX = -speed / 2;
-			if (stick.x + 12 < this.x && this.x <= stick.x + 24)
-				moveX = -1;
+			if (stick.x < this.x && this.x <= stick.x + 12)
+				moveX = -speed;
+			if (stick.x + 12 < this.x && this.x < stick.x + 24)
+				moveX = -(speed / 2);
 			if (stick.x + 24 < this.x && this.x <= stick.x + 36)
-				moveX = 0;
+				moveX = -1;
 			if (stick.x + 36 < this.x && this.x <= stick.x + 48)
-				moveX = 1;
+				moveX = 0;
 			if (stick.x + 48 < this.x && this.x <= stick.x + 60)
-				moveX = speed / 2;
+				moveX = 1;
 			if (stick.x + 60 < this.x && this.x <= stick.x + 72)
-				moveX = speed / 3;
+				moveX = speed / 2;
+			if (stick.x + 72 < this.x && this.x <= stick.x + 84)
+				moveX = speed;
 
 			moveY *= -1;
 		}

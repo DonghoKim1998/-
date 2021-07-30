@@ -9,14 +9,14 @@ public class Block extends ImageIcon {
 	int x, y;
 	private final int width = 50, height = 24;
 
-	String redBlockURL = "res/blocks/block_red.png";
-	String orangeBlockURL = "res/blocks/block_orange.png";
-	String yellowBlockURL = "res/blocks/block_yellow.png";
-	String greenBlockURL = "res/blocks/block_green.png";
-	String skyBlockURL = "res/blocks/block_sky.png";
-	String blueBlockURL = "res/blocks/block_blue.png";
-	String purpleBlockURL = "res/blocks/block_purple.png";
-	String pinkBlockURL = "res/blocks/block_pink.png";
+	String redBlockURL = "res/ball.png";
+	String orangeBlockURL = "res/ball.png";
+	String yellowBlockURL = "res/ball.png";
+	String greenBlockURL = "res/ball.png";
+	String skyBlockURL = "res/ball.png";
+	String blueBlockURL = "res/ball.png";
+	String purpleBlockURL = "res/ball.png";
+	String pinkBlockURL = "res/ball.png";
 
 	ImageIcon blockImg;
 

@@ -172,7 +172,7 @@ public class Main extends JFrame {
 			for (int i = 0; i < 6; i++) {
 				tempList = new ArrayList<Block>();
 				for (int j = 0; j < 10; j++)
-					tempList.add(new Block((j * 51) + 10, (i * 24) + 34));
+					tempList.add(new Block((j * 51) + 15, (i * 24) + 34));
 				blockList.add(tempList);
 			}
 
@@ -202,6 +202,33 @@ public class Main extends JFrame {
 			for (ArrayList<Block> firstDimension : blockList)
 				for (Block block : firstDimension)
 					block.draw(g);
+
+//			g.setColor(Color.red);
+//			g.drawLine(stick.x, 0, stick.x, GAMEPANEL_HEIGHT);
+//			
+//			g.setColor(Color.orange);
+//			g.drawLine(stick.x + 12, 0, stick.x + 12, GAMEPANEL_HEIGHT);
+//			
+//			g.setColor(Color.yellow);
+//			g.drawLine(stick.x + 24, 0, stick.x + 24, GAMEPANEL_HEIGHT);
+//			
+//			g.setColor(Color.green);
+//			g.drawLine(stick.x + 36, 0, stick.x + 36, GAMEPANEL_HEIGHT);
+//			
+//			g.setColor(Color.blue);
+//			g.drawLine(stick.x + 48, 0, stick.x + 48, GAMEPANEL_HEIGHT);
+//			
+//			g.setColor(Color.cyan);
+//			g.drawLine(stick.x + 60, 0, stick.x + 60, GAMEPANEL_HEIGHT);
+//			
+//			g.setColor(Color.MAGENTA);
+//			g.drawLine(stick.x + 72, 0, stick.x + 72, GAMEPANEL_HEIGHT);
+//			
+//			g.setColor(Color.black);
+//			g.drawLine(stick.x + 84, 0, stick.x + 84, GAMEPANEL_HEIGHT);
+			
+			g.setColor(Color.black);
+			g.drawLine(FRAME_WIDTH - 40, 0, FRAME_WIDTH - 40, GAMEPANEL_HEIGHT);
 
 			// ball ±×¸®±â
 			ball.draw(g);
