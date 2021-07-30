@@ -202,12 +202,36 @@ public class Main extends JFrame {
 			for (ArrayList<Block> firstDimension : blockList)
 				for (Block block : firstDimension)
 					block.draw(g);
+			
+			g.setColor(Color.red);
+			g.drawLine(stick.x, 0, stick.x, GAMEPANEL_HEIGHT);
+			g.setColor(Color.orange);
+			g.drawLine(stick.x + 12, 0, stick.x + 12, GAMEPANEL_HEIGHT);
+			g.setColor(Color.yellow);
+			g.drawLine(stick.x + 24, 0, stick.x + 24, GAMEPANEL_HEIGHT);
+			g.setColor(Color.green);
+			g.drawLine(stick.x + 36, 0, stick.x + 36, GAMEPANEL_HEIGHT);
+			g.setColor(Color.blue);
+			g.drawLine(stick.x + 48, 0, stick.x + 48, GAMEPANEL_HEIGHT);
+			g.setColor(Color.cyan);
+			g.drawLine(stick.x + 60, 0, stick.x + 60, GAMEPANEL_HEIGHT);
+			g.setColor(Color.pink);
+			g.drawLine(stick.x + 72, 0, stick.x + 72, GAMEPANEL_HEIGHT);
+			g.setColor(Color.darkGray);
+			g.drawLine(stick.x + 84, 0, stick.x + 84, GAMEPANEL_HEIGHT);
 
-			/*
-			 * 블럭 위치 가이드라인
-			 */
-//			g.setColor(Color.black);
-//			g.drawRect(10, 34, FRAME_WIDTH - 40, 144);
+//			if (stick.x + 1 <= ball.x && ball.x < stick.x + 13)
+//				moveX = -3;
+//			if (stick.x + 13 <= ball.x && ball.x < stick.x + 25)
+//				moveX = -1;
+//			if (stick.x + 25 <= ball.x && ball.x < stick.x + 37)
+//				moveX = 0;
+//			if (stick.x + 37 <= ball.x && ball.x < stick.x + 49)
+//				moveX = -1;
+//			if (stick.x + 49 <= ball.x && ball.x < stick.x + 61)
+//				moveX = 3;
+//			if (stick.x + 61 <= ball.x && ball.x < stick.x + 73)
+//				moveX = 5;
 
 			// ball 그리기
 			ball.draw(g);
@@ -239,13 +263,16 @@ public class Main extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			// 공 계속 움직여주면서 공이 부딪혔는지 혹은 떨어졌는지 판단
+			// 떨어졌을 경우 아래 if문 실행
 			if (!ball.move()) {
+				// life가 모두 소진 시 종료
 				if (lifeCount == 0) {
 					////////////////////////////// 종료 패널 만들어서 띄우기 !! /////////////
 					System.exit(1);
 				}
 
-				// 떨어져서 lifeImgList--, lifeCount--
+				// life가 남은 경우 lifeImgList--, lifeCount--
 				lifeImgList.remove(lifeCount - 1);
 				lifeCount--;
 
@@ -253,7 +280,7 @@ public class Main extends JFrame {
 				if (lifeCount == 0)
 					statePanel.life.setForeground(Color.red);
 
-				// statePanel, gamePanel 그려주기 멈춤
+				// 게임을 다시 시작하기 위해 statePanel, gamePanel 그려주기 멈춤
 				// initPaint 시작
 				statePanelTimer.stop();
 				gamePanelTimer.stop();
@@ -276,13 +303,6 @@ public class Main extends JFrame {
 				for (Block Removeblock : toRemoveBlock)
 					firstDimension.remove(Removeblock);
 			}
-
-//			System.out.println(blockList);
-//
-//			for (Block block : toRemoveBlock) {
-//				System.out.println(block);
-//				firstDimension.remove(block);
-//			}
 
 			// 안떨어지면 statePanel, gamePanel 계속 그려줌
 			statePanel.repaint();

@@ -45,25 +45,19 @@ public class Ball extends ImageIcon {
 			this.moveY *= -1;
 		// stick과 부딪혔는지 판단하여 true인 경우 stick의 위치에 따라 다르게 튀김
 		if (isCollisionWithStick()) {
-			if (stick.x + 15 - 11 <= this.x && this.x < stick.x + 25 - 11)
+			if (stick.x - 12 <= this.x && this.x < stick.x)
 				moveX = -5;
-			if (stick.x + 25 - 11 <= this.x && this.x < stick.x + 35 - 11)
-				moveX = -4;
-			if (stick.x + 35 - 11 <= this.x && this.x < stick.x + 45 - 11)
+			if (stick.x <= this.x && this.x < stick.x + 12)
 				moveX = -3;
-			if (stick.x + 45 - 11 <= this.x && this.x < stick.x + 55 - 11)
-				moveX = -2;
-			if (stick.x + 55 - 11 <= this.x && this.x < stick.x + 65 - 11)
+			if (stick.x + 12 <= this.x && this.x < stick.x + 24)
 				moveX = -1;
-			if (stick.x + 65 - 11 <= this.x && this.x < stick.x + 75 - 11)
+			if (stick.x + 24 <= this.x && this.x < stick.x + 36)
+				moveX = 0;
+			if (stick.x + 36 <= this.x && this.x < stick.x + 48)
 				moveX = 1;
-			if (stick.x + 75 - 11 <= this.x && this.x < stick.x + 85 - 11)
-				moveX = 2;
-			if (stick.x + 85 - 11 <= this.x && this.x < stick.x + 95 - 11)
+			if (stick.x + 48 <= this.x && this.x < stick.x + 60)
 				moveX = 3;
-			if (stick.x + 95 - 11 <= this.x && this.x < stick.x + 105 - 11)
-				moveX = 4;
-			if (stick.x + 105 - 11 <= this.x && this.x < stick.x + 115 - 11)
+			if (stick.x + 60 <= this.x && this.x < stick.x + 72)
 				moveX = 5;
 
 			moveY *= -1;
@@ -80,7 +74,7 @@ public class Ball extends ImageIcon {
 
 	// 공이 stick에 부딪혔는지 판단하는 메소드
 	public boolean isCollisionWithStick() {
-		if ((stick.x - 5 <= this.x && this.x <= stick.x + stick.width + 5) && (670 < this.y && this.y <= 690))
+		if ((stick.x - 11 <= this.x && this.x <= stick.x + stick.width + 11) && (670 < this.y && this.y <= 690))
 			return true;
 		else
 			return false;
