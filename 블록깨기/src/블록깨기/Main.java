@@ -226,9 +226,6 @@ public class Main extends JFrame {
 //			
 //			g.setColor(Color.black);
 //			g.drawLine(stick.x + 84, 0, stick.x + 84, GAMEPANEL_HEIGHT);
-			
-			g.setColor(Color.black);
-			g.drawLine(FRAME_WIDTH - 40, 0, FRAME_WIDTH - 40, GAMEPANEL_HEIGHT);
 
 			// ball ±×¸®±â
 			ball.draw(g);
