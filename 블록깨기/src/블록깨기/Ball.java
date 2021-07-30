@@ -8,8 +8,9 @@ import javax.swing.ImageIcon;
 public class Ball extends ImageIcon {
 	Stick stick;
 	int x, y;
-	int moveX, moveY = -6; // 20까지는 인식 가능 // 초기 7
+	int moveX, moveY; // 20까지는 인식 가능 // 초기 7
 	final int width = 22, height = 22;
+	int speed = 6;
 
 	public Ball(String img, int x, int y, Stick stick) {
 		super(img);
@@ -20,9 +21,10 @@ public class Ball extends ImageIcon {
 		// 공의 초기 방향(왼쪽 or 오른쪽을 정해줌)
 		// 0이면 -1(왼쪽), 1이면 1(오른쪽)
 		if ((int) (Math.random() * 2) == 0)
-			this.moveX = -5;
+			this.moveX = -speed;
 		else
-			this.moveX = 5;
+			this.moveX = speed;
+		moveY = -speed;
 	}
 
 	public boolean move() {
@@ -43,22 +45,23 @@ public class Ball extends ImageIcon {
 			this.moveX *= -1;
 		if (this.y <= 0)
 			this.moveY *= -1;
+
 		// stick과 부딪혔는지 판단하여 true인 경우 stick의 위치에 따라 다르게 튀김
 		if (isCollisionWithStick()) {
-			if (stick.x - 12 <= this.x && this.x < stick.x)
-				moveX = -5;
-			if (stick.x <= this.x && this.x < stick.x + 12)
-				moveX = -3;
-			if (stick.x + 12 <= this.x && this.x < stick.x + 24)
+			if (stick.x - 12 < this.x && this.x <= stick.x)
+				moveX = -speed;
+			if (stick.x < this.x && this.x < stick.x + 12)
+				moveX = -speed / 2;
+			if (stick.x + 12 < this.x && this.x <= stick.x + 24)
 				moveX = -1;
-			if (stick.x + 24 <= this.x && this.x < stick.x + 36)
+			if (stick.x + 24 < this.x && this.x <= stick.x + 36)
 				moveX = 0;
-			if (stick.x + 36 <= this.x && this.x < stick.x + 48)
+			if (stick.x + 36 < this.x && this.x <= stick.x + 48)
 				moveX = 1;
-			if (stick.x + 48 <= this.x && this.x < stick.x + 60)
-				moveX = 3;
-			if (stick.x + 60 <= this.x && this.x < stick.x + 72)
-				moveX = 5;
+			if (stick.x + 48 < this.x && this.x <= stick.x + 60)
+				moveX = speed / 2;
+			if (stick.x + 60 < this.x && this.x <= stick.x + 72)
+				moveX = speed / 3;
 
 			moveY *= -1;
 		}

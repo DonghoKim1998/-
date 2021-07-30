@@ -72,26 +72,26 @@ public class Block extends ImageIcon {
 
 			// 1시 대각선
 			if (ball.getCenterX() > this.x + this.width && ball.getCenterY() < this.y) {
-				ball.moveX = 3;
-				ball.moveY = -3;
+				ball.moveX = ball.speed;
+				ball.moveY = -ball.speed;
 			}
 
 			// 5시 대각선
 			if (ball.getCenterX() > this.x + this.width && ball.getCenterY() > this.y + this.height) {
-				ball.moveX = 3;
-				ball.moveY = 3;
+				ball.moveX = ball.speed;
+				ball.moveY = ball.speed;
 			}
 
 			// 7시 대각선
 			if (ball.getCenterX() < this.x && ball.getCenterY() < this.y + this.height) {
-				ball.moveX = -3;
-				ball.moveY = 3;
+				ball.moveX = -ball.speed;
+				ball.moveY = ball.speed;
 			}
 
 			// 11시 대각선
 			if (ball.getCenterX() < this.x && ball.getCenterY() < this.y) {
-				ball.moveX = -3;
-				ball.moveY = -3;
+				ball.moveX = -ball.speed;
+				ball.moveY = -ball.speed;
 			}
 
 			return true;
