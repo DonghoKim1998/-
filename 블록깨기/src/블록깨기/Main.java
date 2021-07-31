@@ -26,7 +26,8 @@ public class Main extends JFrame {
 	StatePanel statePanel;
 	GamePanel gamePanel;
 	Ball ball;
-	Stick stick;
+//	Stick stick;
+	Item item;
 
 	// 위치 절대값 설정
 	final static int FRAME_WIDTH = 560;
@@ -37,10 +38,15 @@ public class Main extends JFrame {
 	final int INIT_MOUSE_Y = 890;
 	final int DEADLINE_HEIGHT = 550;
 	final int BLOCKDOWNDELAY = 10;
+	final int ITEM_DEADLINE = 710;
 
 	// 이미지 관련
 	String stickImgURL = "res/stick.png";
 	String ballImgURL = "res/ball.png";
+	String stickPlusURL = "res/items/stickPlus";
+	String stickMinusURL = "res/items/stickMinus";
+	String ballPlusURL = "res/items/ballPlus";
+	String ballMinusURL = "res/items/ballMinus";
 	ImageIcon ballImg = new ImageIcon(ballImgURL);
 	ImageIcon backGroundImg = new ImageIcon("res/game_background.png");
 	ImageIcon deadLineImg = new ImageIcon("res/deadLine.png");
@@ -52,6 +58,8 @@ public class Main extends JFrame {
 	ArrayList<ArrayList<Block>> blockList;
 	ArrayList<Block> tempList;
 	ArrayList<Block> toRemoveBlock = new ArrayList<Block>();
+	ArrayList<Item> itemList = new ArrayList<Item>();
+	ArrayList<Item> toRemoveItem = new ArrayList<Item>();
 
 	// Timer
 	// 진행 시간 관련 Timer
@@ -165,6 +173,8 @@ public class Main extends JFrame {
 
 	// GamePanel
 	public class GamePanel extends JPanel {
+		Stick stick;
+
 		public GamePanel() {
 			stick = new Stick(stickImgURL, FRAME_WIDTH / 2);
 			ball = new Ball(ballImgURL, FRAME_WIDTH / 2, stick.y - 20, stick);
@@ -190,10 +200,10 @@ public class Main extends JFrame {
 		public void paintComponent(Graphics g) {
 			g.setColor(Color.white);
 			g.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
-			
+
 			// GamePanel 배경 그리기
 			g.drawImage(backGroundImg.getImage(), 0, 0, FRAME_WIDTH, GAMEPANEL_HEIGHT, null);
-			
+
 			// deadLine 그리기
 			g.drawImage(deadLineImg.getImage(), 0, 550, FRAME_WIDTH, 5, null);
 
@@ -208,6 +218,10 @@ public class Main extends JFrame {
 			for (ArrayList<Block> firstDimension : blockList)
 				for (Block block : firstDimension)
 					block.draw(g);
+
+			// 아이템 그리기
+			for (Item item : itemList)
+				item.draw(g);
 
 //			g.setColor(Color.red);
 //			g.drawLine(stick.x, 0, stick.x, GAMEPANEL_HEIGHT);
@@ -234,6 +248,8 @@ public class Main extends JFrame {
 //			g.drawLine(stick.x + 84, 0, stick.x + 84, GAMEPANEL_HEIGHT);
 
 			// ball 그리기
+//			for(Ball ball : ballList)
+//				ball.draw(g);
 			ball.draw(g);
 		}
 	}
@@ -254,11 +270,11 @@ public class Main extends JFrame {
 			// Score 설정
 			score += 1;
 			statePanel.score.setText("Score  " + String.format("%d", score));
-			
+
 			// 10초마다 블럭들이 내려옴
-			if(time % BLOCKDOWNDELAY == 0) {
-				for(ArrayList<Block> firstDimension : blockList) {
-					for(Block block : firstDimension)
+			if (time % BLOCKDOWNDELAY == 0) {
+				for (ArrayList<Block> firstDimension : blockList) {
+					for (Block block : firstDimension)
 						block.y += 24;
 				}
 			}
@@ -274,6 +290,7 @@ public class Main extends JFrame {
 			// 공 계속 움직여주면서 공이 부딪혔는지 혹은 떨어졌는지 판단
 			// 떨어졌을 경우 아래 if문 실행
 			if (!ball.move()) {
+				itemList.clear();
 				// life가 모두 소진 시 종료
 				if (lifeCount == 0) {
 					////////////////////////////// 종료 패널 만들어서 띄우기 !! /////////////
@@ -295,7 +312,7 @@ public class Main extends JFrame {
 				initPaintTimer.start();
 
 				// 시작 전 공 위치 설정
-				ball.y = stick.y - 20;
+				ball.y = gamePanel.stick.y - 20;
 			}
 
 			// 모든 block에 대해 공과 부딪혔는지 판단
@@ -304,24 +321,43 @@ public class Main extends JFrame {
 				for (Block block : firstDimension) {
 					// 공과 부딪힌 경우
 					if (block.isBreak(ball)) {
+
+						// 20% 확률로 아이템 드랍
+						// 0~3 중 난수를 주어 아이템 종류 결정
+						if (((int) (Math.random() * 10)) < 10)
+							itemList.add(new Item(block.getCenterPoint(), (int) (Math.random() * 4), gamePanel.stick));
+
 						// 점수 추가
 						statePanelTimerClass.score += 5;
 						statePanel.score.setText("Score  " + String.format("%d", statePanelTimerClass.score));
-						
+
 						// ConcurrentModificationException 방지
 						toRemoveBlock.add(block);
 					}
-					
+
 					// 블럭이 deadLine을 넘은 경우
-					if(block.y + block.height >= 550)
+					if (block.y + block.height >= 550)
 						/*
-						 *  게임종료 메소드 만들어 추가하기 !!!!!!!!!!!!!!
+						 * 게임종료 메소드 만들어 추가하기 !!!!!!!!!!!!!!
 						 */
 						System.exit(1);
 				}
 
-				for (Block Removeblock : toRemoveBlock)
-					firstDimension.remove(Removeblock);
+				for (Block removeblock : toRemoveBlock)
+					firstDimension.remove(removeblock);
+			}
+
+			// 아이템 떨어트림
+			for (Item item : itemList) {
+				item.itemDrop();
+//				item.isGetItem();
+
+				// 일정 위치 지나면 삭제
+				if (item.y >= ITEM_DEADLINE) {
+					toRemoveItem.add(item);
+					for (Item removeItem : toRemoveItem)
+						itemList.remove(removeItem);
+				}
 			}
 
 			// 안떨어지면 statePanel, gamePanel 계속 그려줌
@@ -334,7 +370,7 @@ public class Main extends JFrame {
 	public class InitPaintClass implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			ball.x = stick.x + 33;
+			ball.x = gamePanel.stick.x + 33;
 			gamePanel.repaint();
 		}
 
@@ -370,10 +406,10 @@ public class Main extends JFrame {
 		}
 	}
 	/* Listener 끝 */
-	
+
 	/* 추가적인 메소드 */
 	public void exitGame() {
-		
+
 	}
 
 	// 메인 메소드
