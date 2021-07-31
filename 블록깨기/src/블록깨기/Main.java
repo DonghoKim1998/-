@@ -56,12 +56,15 @@ public class Main extends JFrame {
 	// 진행 시간 관련 Timer
 	Timer statePanelTimer;
 	private final int STATEPANELTIMER_DELAY = 1000;
+	StatePanelTimerClass statePanelTimerClass = new StatePanelTimerClass();
 	// 0.005초마다 게임패널 그려주는 Timer
 	Timer gamePanelTimer;
 	private final int GAMEPANELTIMER_DELAY = 1;
+	GamePanelTimerClass gamePanelTimerClass = new GamePanelTimerClass();
 	// 게임 시작 전 공 위치를 계속 그려주기 위한 Timer
 	Timer initPaintTimer;
 	private final int INITBALLPAINTTIMER_Delay = 1;
+	InitPaintClass initPaintClass = new InitPaintClass();
 
 	/* 메인프레임 시작 */
 	// (1) 생성자: Frame 설정
@@ -145,7 +148,7 @@ public class Main extends JFrame {
 			for (int i = 0; i < 2; i++)
 				lifeImgList.add(ballImg);
 
-			statePanelTimer = new Timer(STATEPANELTIMER_DELAY, new StatePanelTimerClass());
+			statePanelTimer = new Timer(STATEPANELTIMER_DELAY, statePanelTimerClass);
 		}
 
 		// StatePanel 그리는 메소드
@@ -176,10 +179,10 @@ public class Main extends JFrame {
 				blockList.add(tempList);
 			}
 
-			initPaintTimer = new Timer(INITBALLPAINTTIMER_Delay, new InitPaintClass());
+			initPaintTimer = new Timer(INITBALLPAINTTIMER_Delay, initPaintClass);
 			initPaintTimer.start();
 
-			gamePanelTimer = new Timer(GAMEPANELTIMER_DELAY, new GamePanelTimerClass());
+			gamePanelTimer = new Timer(GAMEPANELTIMER_DELAY, gamePanelTimerClass);
 		}
 
 		// GamePanel 그리는 메소드
@@ -288,8 +291,14 @@ public class Main extends JFrame {
 			// 부딪혔을 경우 해당 block 객체 삭제
 			for (ArrayList<Block> firstDimension : blockList) {
 				for (Block block : firstDimension) {
-					if (block.isBreak(ball))
+					if (block.isBreak(ball)) {
+						// 깨면 점수추가
+						statePanelTimerClass.score += 5;
+						statePanel.score.setText("Score  " + String.format("%d", statePanelTimerClass.score));
+						
+						// ConcurrentModificationException 방지
 						toRemoveBlock.add(block);
+					}
 				}
 
 				for (Block Removeblock : toRemoveBlock)

@@ -1,5 +1,6 @@
 package 블록깨기;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 
@@ -7,16 +8,16 @@ import javax.swing.ImageIcon;
 
 public class Block extends ImageIcon {
 	int x, y;
-	private final int width = 50, height = 24;
+	private final int width = 50, height = 50;
 
-	String redBlockURL = "res/blocks/block_red.png";
-	String orangeBlockURL = "res/blocks/block_orange.png";
-	String yellowBlockURL = "res/blocks/block_yellow.png";
-	String greenBlockURL = "res/blocks/block_green.png";
-	String skyBlockURL = "res/blocks/block_sky.png";
-	String blueBlockURL = "res/blocks/block_blue.png";
-	String purpleBlockURL = "res/blocks/block_purple.png";
-	String pinkBlockURL = "res/blocks/block_pink.png";
+	String redBlockURL = "res/a.png";
+	String orangeBlockURL = "res/b.png";
+	String yellowBlockURL = "res/c.png";
+	String greenBlockURL = "res/d.png";
+	String skyBlockURL = "res/a.png";
+	String blueBlockURL = "res/b.png";
+	String purpleBlockURL = "res/c.png";
+	String pinkBlockURL = "res/d.png";
 
 	ImageIcon blockImg;
 
@@ -83,7 +84,7 @@ public class Block extends ImageIcon {
 			}
 
 			// 7시 대각선
-			if (ball.getCenterX() < this.x && ball.getCenterY() < this.y + this.height) {
+			if (ball.getCenterX() < this.x && ball.getCenterY() > this.y + this.height) {
 				ball.moveX = -ball.speed;
 				ball.moveY = ball.speed;
 			}
@@ -122,6 +123,8 @@ public class Block extends ImageIcon {
 	}
 
 	public void draw(Graphics g) {
+		g.setColor(Color.black);
+		g.drawOval(this.x, this.y, width, height);
 		g.drawImage(this.getImage(), this.x, this.y, this.width, this.height, null);
 	}
 }

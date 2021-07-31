@@ -8,9 +8,9 @@ import javax.swing.ImageIcon;
 public class Ball extends ImageIcon {
 	Stick stick;
 	int x, y;
-	int moveX, moveY; // 20까지는 인식 가능 // 초기 7
+	int moveX, moveY; // 20까지는 인식 가능
 	final int width = 22, height = 22;
-	int speed = 6;
+	int speed = 8; // 초기 스피드: 8
 
 	public Ball(String img, int x, int y, Stick stick) {
 		super(img);
