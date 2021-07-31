@@ -192,7 +192,7 @@ public class Main extends JFrame {
 			g.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 			
 			// GamePanel 배경 그리기
-//			g.drawImage(backGroundImg.getImage(), 0, 0, FRAME_WIDTH, GAMEPANEL_HEIGHT, null);
+			g.drawImage(backGroundImg.getImage(), 0, 0, FRAME_WIDTH, GAMEPANEL_HEIGHT, null);
 			
 			// deadLine 그리기
 			g.drawImage(deadLineImg.getImage(), 0, 550, FRAME_WIDTH, 5, null);
@@ -370,6 +370,11 @@ public class Main extends JFrame {
 		}
 	}
 	/* Listener 끝 */
+	
+	/* 추가적인 메소드 */
+	public void exitGame() {
+		
+	}
 
 	// 메인 메소드
 	public static void main(String[] args) {

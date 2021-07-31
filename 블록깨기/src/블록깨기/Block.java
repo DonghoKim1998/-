@@ -10,14 +10,10 @@ public class Block extends ImageIcon {
 	int x, y;
 	final int width = 50, height = 50;
 
-	String redBlockURL = "res/a.png";
-	String orangeBlockURL = "res/b.png";
-	String yellowBlockURL = "res/c.png";
-	String greenBlockURL = "res/d.png";
-	String skyBlockURL = "res/a.png";
-	String blueBlockURL = "res/b.png";
-	String purpleBlockURL = "res/c.png";
-	String pinkBlockURL = "res/d.png";
+	String blockA = "res/blocks/blockA.png";
+	String blockB = "res/blocks/blockB.png";
+	String blockC = "res/blocks/blockC.png";
+	String blockD = "res/blocks/blockD.png";
 
 	ImageIcon blockImg;
 
@@ -26,31 +22,19 @@ public class Block extends ImageIcon {
 		this.y = y;
 
 		// »ý¼ºµÇ´Â block °´Ã¼ÀÇ ÀÌ¹ÌÁö¸¦ ·£´ý°ªÀ¸·Î °ñ¶óÁÜ
-		int randomNum = (int) (Math.random() * 8);
+		int randomNum = (int) (Math.random() * 4);
 		switch (randomNum) {
 		case 0:
-			this.blockImg = new ImageIcon(redBlockURL);
+			this.blockImg = new ImageIcon(blockA);
 			break;
 		case 1:
-			this.blockImg = new ImageIcon(orangeBlockURL);
+			this.blockImg = new ImageIcon(blockB);
 			break;
 		case 2:
-			this.blockImg = new ImageIcon(yellowBlockURL);
+			this.blockImg = new ImageIcon(blockC);
 			break;
 		case 3:
-			this.blockImg = new ImageIcon(greenBlockURL);
-			break;
-		case 4:
-			this.blockImg = new ImageIcon(skyBlockURL);
-			break;
-		case 5:
-			this.blockImg = new ImageIcon(blueBlockURL);
-			break;
-		case 6:
-			this.blockImg = new ImageIcon(purpleBlockURL);
-			break;
-		case 7:
-			this.blockImg = new ImageIcon(pinkBlockURL);
+			this.blockImg = new ImageIcon(blockD);
 			break;
 		}
 
@@ -123,8 +107,6 @@ public class Block extends ImageIcon {
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(Color.black);
-		g.drawOval(this.x, this.y, width, height);
 		g.drawImage(this.getImage(), this.x, this.y, this.width, this.height, null);
 	}
 }
