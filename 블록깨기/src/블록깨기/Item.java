@@ -20,6 +20,7 @@ public class Item extends ImageIcon {
 		this.y = p.y;
 		this.type = type;
 
+		// type에 따라 아이템 결정
 		switch (type) {
 		case 0:
 			this.itemImg = new ImageIcon(ballMinus);
@@ -40,14 +41,6 @@ public class Item extends ImageIcon {
 	public void itemDrop() {
 		this.y += 3;
 	}
-	
-//	public int isGetItem() {
-//		if((stick.x <= this.x && this.x <= stick.x + stick.width) && (stick.y - 5 <= this.y && this.y <= stick.y + 5)) {
-//			if(this.type == 0) {
-//				
-//			}
-//		}
-//	}
 
 	public void draw(Graphics g) {
 		g.drawImage(this.getImage(), x, y, width, height, null);

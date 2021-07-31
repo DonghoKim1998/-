@@ -9,13 +9,12 @@ import javax.swing.ImageIcon;
 public class Block extends ImageIcon {
 	int x, y;
 	final int width = 50, height = 50;
+	ImageIcon blockImg;
 
 	String blockA = "res/blocks/blockA.png";
 	String blockB = "res/blocks/blockB.png";
 	String blockC = "res/blocks/blockC.png";
 	String blockD = "res/blocks/blockD.png";
-
-	ImageIcon blockImg;
 
 	public Block(int x, int y) {
 		this.x = x;
@@ -38,7 +37,6 @@ public class Block extends ImageIcon {
 			break;
 		}
 
-		// System.out.println("Random Number: " + randomNum);
 		this.setImage(blockImg.getImage());
 	}
 
@@ -99,10 +97,6 @@ public class Block extends ImageIcon {
 
 	public int getCenterY() {
 		return this.y + this.height / 2;
-	}
-
-	public String toString() {
-		return "" + this.x + "," + this.y;
 	}
 
 	public void draw(Graphics g) {

@@ -22,25 +22,31 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Main extends JFrame {
-	// 클래스 관련
 	Robot robot;
 	StatePanel statePanel;
 	GamePanel gamePanel;
 	Stick stick;
 	Item item;
 
-	// 위치 절대값 설정
+	// 화면 크기값
 	final static int FRAME_WIDTH = 560;
 	final int FRAME_HEIGHT = 880;
 	final int STATEPANEL_HEIGHT = 60;
 	final int GAMEPANEL_HEIGHT = 820;
+	// 초기 마우스 좌표값
 	final int INIT_MOUSE_X = 950;
 	final int INIT_MOUSE_Y = 890;
+	// 기준선
 	final int DEADLINE_HEIGHT = 550;
-	final int BLOCKDOWNDELAY = 10;
 	final int ITEM_DEADLINE = 720;
+	// 블럭 떨어지는 시간값
+	final int BLOCKDOWNDELAY = 10;
+	// 생명 카운트 변수
 	int lifeCount = 2;
+	// 아이템 나올 확률
+	int probability = 3;
 
+	// Image
 	// 이미지 관련
 	String stickImgURL = "res/stick.png";
 	String ballImgURL = "res/ball.png";
@@ -53,33 +59,42 @@ public class Main extends JFrame {
 	ImageIcon deadLineImg = new ImageIcon("res/deadLine.png");
 	ImageIcon statePanelBackImg = new ImageIcon("res/statePanelBackImg.png");
 
+	// ArrayList
+	// 공 저장 ArrayList
 	ArrayList<Ball> ballList = new ArrayList<Ball>();
+	// 공 삭제 ArrayList
 	ArrayList<Ball> toRemoveBall = new ArrayList<Ball>();
+	// 남은 life ArrayList
 	ArrayList<ImageIcon> lifeImgList = new ArrayList<>(2);
+	// 블럭 저장 ArrayList
 	ArrayList<ArrayList<Block>> blockList = new ArrayList<ArrayList<Block>>();
+	// 블럭 생성 ArrayList
 	ArrayList<Block> tempList;
+	// 블럭 제거 ArrayList
 	ArrayList<Block> toRemoveBlock = new ArrayList<Block>();
+	// 아이템 저장 ArrayList
 	ArrayList<Item> itemList = new ArrayList<Item>();
+	// 아이템 삭제 ArrayList
 	ArrayList<Item> toRemoveItem = new ArrayList<Item>();
 
 	// Timer
-	// 진행 시간 관련 Timer
-	Timer statePanelTimer;
-	private final int STATEPANELTIMER_DELAY = 1000;
-	StatePanelTimerClass statePanelTimerClass = new StatePanelTimerClass();
-	// 0.005초마다 게임패널 그려주는 Timer
-	Timer gamePanelTimer;
-	private final int GAMEPANELTIMER_DELAY = 1;
-	GamePanelTimerClass gamePanelTimerClass = new GamePanelTimerClass();
+	// 1초마다 실행되는 Timer
+	Timer oneSecondTimer;
+	private final int ONESECOND = 1000;
+	OneSecondTimerClass OneSecondTimerClass = new OneSecondTimerClass();
+	// 0.005초마다 실행되는 Timer
+	Timer oneMilliSecondTimer;
+	private final int ONEMILLISECOND = 1;
+	OneMilliSecondTimerClass oneMilliSecondTimerClass = new OneMilliSecondTimerClass();
 	// 게임 시작 전 공 위치를 계속 그려주기 위한 Timer
 	Timer initPaintTimer;
-	private final int INITBALLPAINTTIMER_Delay = 1;
+	private final int INITBALLPAINTTIMER_DELAY = 1;
 	InitPaintClass initPaintClass = new InitPaintClass();
 
 	/* 메인프레임 시작 */
 	// (1) 생성자: Frame 설정
 	public Main() {
-		this.setTitle("블록깨기");
+		this.setTitle("Break COVID-19");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 		this.setLocationRelativeTo(null);
@@ -109,6 +124,7 @@ public class Main extends JFrame {
 				new Point(0, 0), "null"));
 	}
 
+	// 패널 초기화 및 add()
 	public void initAndAddPanels() {
 		// StatePanel 초기화, Frame에 추가
 		statePanel = new StatePanel();
@@ -132,43 +148,44 @@ public class Main extends JFrame {
 		JLabel life, playingTime, score;
 
 		public StatePanel() {
+			// label, lifeImgList 초기화
 			setComponent();
 
-			statePanelTimer = new Timer(STATEPANELTIMER_DELAY, statePanelTimerClass);
+			oneSecondTimer = new Timer(ONESECOND, OneSecondTimerClass);
 		}
 
 		public void setComponent() {
-			// life 설정
+			// life
 			life = new JLabel("Life");
 			life.setBounds(30, 15, 50, 35);
 			life.setFont(new Font("Rix짱구 M", Font.ITALIC, 30));
 			life.setForeground(Color.black);
 			add(life);
 
-			// playingTime 설정
+			// playingTime
 			playingTime = new JLabel("Time 00:00");
 			playingTime.setBounds(200, 15, 170, 35);
 			playingTime.setFont(new Font("Rix짱구 M", Font.ITALIC, 30));
 			playingTime.setForeground(Color.black);
 			add(playingTime);
 
-			// score 설정
+			// score
 			score = new JLabel("Score");
 			score.setBounds(390, 15, 170, 35);
 			score.setFont(new Font("Rix짱구 M", Font.ITALIC, 30));
 			score.setForeground(Color.black);
 			add(score);
 
-			// 초기 life 2개로 초기화
+			// life 2개로 초기화
 			for (int i = 0; i < 2; i++)
 				lifeImgList.add(ballImg);
 		}
 
 		public void paintComponent(Graphics g) {
-			// StatePanel 배경 그리기
+			// StatePanel 배경
 			g.drawImage(statePanelBackImg.getImage(), 0, 0, null);
 
-			// 남은 life 그리기
+			// 잔여 life
 			for (int i = 1; i <= lifeImgList.size(); i++)
 				g.drawImage(lifeImgList.get(i - 1).getImage(), 50 + (i * 40), 12, 40, 40, null);
 		}
@@ -176,10 +193,16 @@ public class Main extends JFrame {
 
 	// GamePanel
 	public class GamePanel extends JPanel {
-//		Stick stick;
-
 		public GamePanel() {
+			// stick, ballList, blockList 초기화
+			initialize();
+
+			initPaintTimer.start();
+		}
+
+		public void initialize() {
 			stick = new Stick(stickImgURL, FRAME_WIDTH / 2);
+
 			ballList.add(new Ball(ballImgURL, FRAME_WIDTH / 2, stick.y - 20, stick));
 
 			// blockList에 Block 객체 삽입
@@ -191,36 +214,34 @@ public class Main extends JFrame {
 				blockList.add(tempList);
 			}
 
-			initPaintTimer = new Timer(INITBALLPAINTTIMER_Delay, initPaintClass);
-			initPaintTimer.start();
-
-			gamePanelTimer = new Timer(GAMEPANELTIMER_DELAY, gamePanelTimerClass);
+			initPaintTimer = new Timer(INITBALLPAINTTIMER_DELAY, initPaintClass);
+			oneMilliSecondTimer = new Timer(ONEMILLISECOND, oneMilliSecondTimerClass);
 		}
 
 		public void paintComponent(Graphics g) {
-			// GamePanel 배경 그리기
+			// GamePanel 배경
 			g.drawImage(backGroundImg.getImage(), 0, 0, FRAME_WIDTH, GAMEPANEL_HEIGHT, null);
 
-			// deadLine 그리기
+			// deadLine
 			g.drawImage(deadLineImg.getImage(), 0, DEADLINE_HEIGHT, FRAME_WIDTH, 5, null);
 
-			// stick 그리기
+			// stick
 			try {
 				stick.x = this.getMousePosition().x - 45;
 				stick.draw(g);
 			} catch (Exception e) {
 			}
 
-			// 블럭 그리기
+			// block
 			for (ArrayList<Block> firstDimension : blockList)
 				for (Block block : firstDimension)
 					block.draw(g);
 
-			// 아이템 그리기
+			// item
 			for (Item item : itemList)
 				item.draw(g);
 
-			// ball 그리기
+			// ball
 			for (Ball ball : ballList)
 				ball.draw(g);
 		}
@@ -228,18 +249,18 @@ public class Main extends JFrame {
 	/* 패널 클래스 끝 */
 
 	/* Timer 클래스 시작 */
-	public class StatePanelTimerClass implements ActionListener {
+	public class OneSecondTimerClass implements ActionListener {
 		int time = 0;
 		int score = 0;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// playingTime 설정
+			// playingTime
 			time++;
 			statePanel.playingTime
 					.setText("Time " + String.format("%02d", time / 60) + ":" + String.format("%02d", time % 60));
 
-			// Score 설정
+			// score
 			score += 1;
 			statePanel.score.setText("Score  " + String.format("%d", score));
 
@@ -249,16 +270,22 @@ public class Main extends JFrame {
 					for (Block block : firstDimension)
 						block.y += 24;
 				}
+
+				tempList = new ArrayList<Block>();
+				for (int i = 0; i < 10; i++)
+					tempList.add(new Block((i * 51) + 15, 34));
+				blockList.add(tempList);
 			}
 		}
 	}
 
 	// 게임 시작하면 시작하는 Timer 클래스
-	public class GamePanelTimerClass implements ActionListener {
-
+	public class OneMilliSecondTimerClass implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			// ball 움직여주며 추락했는지 확인
 			isBallFall();
+			// block이 깨졌는지 확인
 			isBreakBlock();
 
 			statePanel.repaint();
@@ -266,7 +293,7 @@ public class Main extends JFrame {
 		}
 	}
 
-// 게임시작 전 공과 스틱 그려주는 Timer 클래스
+	// 게임시작 전 공과 스틱 그려주는 Timer 클래스
 	public class InitPaintClass implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -286,8 +313,8 @@ public class Main extends JFrame {
 			initPaintTimer.stop();
 
 			// gamePanel과 statePanel 그려줌
-			gamePanelTimer.start();
-			statePanelTimer.start();
+			oneMilliSecondTimer.start();
+			oneSecondTimer.start();
 		}
 
 		@Override
@@ -309,17 +336,18 @@ public class Main extends JFrame {
 	/* Listener 끝 */
 
 	/* 기능구현 메소드 시작 */
+	// ballList 초기화 메소드
 	public void initBallList() {
 		this.ballList.clear();
 		this.ballList.add(new Ball(ballImgURL, FRAME_WIDTH / 2, stick.y - 20, stick));
 	}
 
-	// 공이 떨어진 경우
+	// ball 움직여주며 추락했는지 확인하는 메소드
 	public void isBallFall() {
 		// 모든 공에 대해서
 		for (Ball ball : ballList)
 			// 떨어졌는지 확인, 떨어진 경우 toRemoveBall에 객체 삽입
-			if (!ball.move())
+			if (ball.move())
 				toRemoveBall.add(ball);
 
 		// 떨어진 공 삭제
@@ -331,9 +359,11 @@ public class Main extends JFrame {
 			// 생긴 아이템 clear
 			itemList.clear();
 
-			// life가 모두 소진 시 종료
-			if (lifeCount == 0)
-				System.exit(1);
+			// life가 모두 소진 시 게임 초기화
+			if (lifeCount == 0) {
+				resetGame();
+				return;
+			}
 
 			// life가 남은 경우 lifeImgList--, lifeCount--
 			lifeImgList.remove(lifeCount - 1);
@@ -343,44 +373,41 @@ public class Main extends JFrame {
 			if (lifeCount == 0)
 				statePanel.life.setForeground(Color.red);
 
-			// 게임을 다시 시작하기 위해 statePanel, gamePanel 그려주기 멈춤
-			// initPaint 시작
-			statePanelTimer.stop();
-			gamePanelTimer.stop();
-			initPaintTimer.start();
-
 			// 다시 시작하기 전 새로운 공 만들어주기
 			initBallList();
+
+			// 게임을 다시 시작하기 위해 statePanel, gamePanel 그려주기 멈춤
+			// initPaint 시작
+			oneSecondTimer.stop();
+			oneMilliSecondTimer.stop();
+			initPaintTimer.start();
 		}
 	}
 
 	// 벽돌 깬 경우
 	public void isBreakBlock() {
-		int probability = 5;
-
 		for (ArrayList<Block> firstDimension : blockList) {
 			for (Block block : firstDimension) {
 				for (Ball ball : ballList) {
 					if (block.isBreak(ball)) {
-						// 20% 확률로 아이템 드랍
+						// 30% 확률로 아이템 드랍
 						// 0~3 중 난수를 주어 아이템 종류 결정
 						if (((int) (Math.random() * 10)) < probability)
 							itemList.add(new Item(block.getCenterPoint(), (int) (Math.random() * 4), stick));
 
 						// 점수 추가
-						statePanelTimerClass.score += 5;
-						statePanel.score.setText("Score  " + String.format("%d", statePanelTimerClass.score));
+						OneSecondTimerClass.score += 5;
+						statePanel.score.setText("Score  " + String.format("%d", OneSecondTimerClass.score));
 
 						toRemoveBlock.add(block);
 					}
 				}
 
 				// 블럭이 deadLine을 넘은 경우
-				if (block.y + block.height >= 550)
-					/*
-					 * 게임종료 메소드 만들어 추가하기 !!!!!!!!!!!!!!
-					 */
-					System.exit(1);
+				if (block.y + block.height >= 550) {
+					resetGame();
+					return;
+				}
 			}
 
 			for (Block removeblock : toRemoveBlock)
@@ -391,7 +418,7 @@ public class Main extends JFrame {
 		for (Item item : itemList) {
 			item.itemDrop();
 
-			// 먹으면
+			// sitck에 닿으면
 			if ((stick.x <= item.x && item.x <= stick.x + stick.width)
 					&& (stick.y <= item.y && item.y <= stick.y + stick.height)) {
 				switch (item.type) {
@@ -407,7 +434,8 @@ public class Main extends JFrame {
 					break;
 				// stickMinus
 				case 2:
-					stick.width -= 5;
+					if (stick.width > 70)
+						stick.width -= 5;
 					break;
 				// stickPlus
 				case 3:
@@ -427,10 +455,35 @@ public class Main extends JFrame {
 			itemList.remove(removeItem);
 	}
 
-	public void endGame() {
-		/*
-		 * 구현필요
-		 */
+	// 게임 초기화 메소드
+	public void resetGame() {
+		// 타이머 정지
+		oneSecondTimer.stop();
+		oneMilliSecondTimer.stop();
+		
+		// 데이터 초기화
+		statePanel.playingTime.setText("Time 00:00");
+		statePanel.score.setText("Score ");
+		OneSecondTimerClass.time = 0;
+		OneSecondTimerClass.score = 0;
+		lifeImgList.clear();
+		for (int i = 0; i < 2; i++)
+			lifeImgList.add(ballImg);
+		statePanel.repaint();
+
+		blockList.clear();
+		for (int i = 0; i < 6; i++) {
+			tempList = new ArrayList<Block>();
+			for (int j = 0; j < 10; j++)
+				tempList.add(new Block((j * 51) + 15, (i * 24) + 34));
+			blockList.add(tempList);
+		}
+		lifeCount = 2;
+		
+		// 공 초기화
+		initBallList();
+		// 다시 시작
+		initPaintTimer.start();
 	}
 	/* 기능구현 메소드 끝 */
 

@@ -7,10 +7,10 @@ import javax.swing.ImageIcon;
 
 public class Ball extends ImageIcon {
 	Stick stick;
-	int x, y;
-	int moveX, moveY; // 20까지는 인식 가능
+	
+	int x, y, moveX, moveY;
+	int speed = 8;
 	final int width = 22, height = 22;
-	int speed = 8; // 초기 스피드: 8
 	final int BALLDEADLINE_Y = 760;
 	
 	public Ball(String img, int x, int y, Stick stick) {
@@ -19,7 +19,7 @@ public class Ball extends ImageIcon {
 		this.y = y;
 		this.stick = stick;
 
-		// 공의 초기 방향(왼쪽 or 오른쪽을 정해줌)
+		// 공의 초기 방향(왼쪽 or 오른쪽 정함)
 		// 0이면 -1(왼쪽), 1이면 1(오른쪽)
 		if ((int) (Math.random() * 2) == 0)
 			this.moveX = -speed;
@@ -28,29 +28,30 @@ public class Ball extends ImageIcon {
 		moveY = -speed;
 	}
 
+	// 좌표 이동 메소드
 	public boolean move() {
+		// 다른 객체와 부딪혔는지 판단
 		isCrash();
-		if (!isFall())
-			return false;
+		// 공이 떨어졌는지 판단
+		if (isFall())
+			return true;
 
 		this.x += moveX;
 		this.y += moveY;
 
-		return true;
+		return false;
 	}
 
-	// 벽/Block/Stick과 부딪혔는지 판단하며
-	// 부딪히면 방향(moveX/moveY)를 바꿔주는 메소드
+	// 벽/Block/Stick과 부딪혔는지 판단
+	// 부딪히면 방향(moveX/moveY) 바꿔주는 메소드
 	public void isCrash() {
-		// 우측벽에 끼는 경우 빼주기
-//		if (Main.FRAME_WIDTH - 30 < this.x && this.x <= Main.FRAME_WIDTH)
-//			this.moveX = -6;
+		// 벽
 		if (this.x <= 0 || this.x >= Main.FRAME_WIDTH - 50)
 			this.moveX *= -1;
 		if (this.y <= 0)
 			this.moveY *= -1;
 
-		// stick과 부딪혔는지 판단하여 true인 경우 stick의 위치에 따라 다르게 튀김
+		// stick에 닿은 위치에 따라 다르게 튀게하는 메소드
 		if (isCollisionWithStick()) {
 			if (stick.x - 12 < this.x && this.x <= stick.x + 12)
 				moveX = -speed;
@@ -74,9 +75,9 @@ public class Ball extends ImageIcon {
 	// 공이 deadLine까지 떨어졌는지 판단하는 메소드
 	public boolean isFall() {
 		if (this.y >= BALLDEADLINE_Y - 15)
-			return false;
-		else
 			return true;
+		else
+			return false;
 	}
 
 	// 공이 stick에 부딪혔는지 판단하는 메소드
