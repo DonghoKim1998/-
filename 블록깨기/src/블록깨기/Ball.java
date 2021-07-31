@@ -43,10 +43,9 @@ public class Ball extends ImageIcon {
 	// 부딪히면 방향(moveX/moveY)를 바꿔주는 메소드
 	public void isCrash() {
 		// 우측벽에 끼는 경우 빼주기
-		if (Main.FRAME_WIDTH - 30 < this.x && this.x <= Main.FRAME_WIDTH)
-			this.moveX = -6;
-
-		if (this.x <= 0 || this.x >= Main.FRAME_WIDTH - 45)
+//		if (Main.FRAME_WIDTH - 30 < this.x && this.x <= Main.FRAME_WIDTH)
+//			this.moveX = -6;
+		if (this.x <= 0 || this.x >= Main.FRAME_WIDTH - 50)
 			this.moveX *= -1;
 		if (this.y <= 0)
 			this.moveY *= -1;

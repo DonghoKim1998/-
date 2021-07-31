@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 
 public class Stick extends ImageIcon {
 	int x;
-	public final int width = 90, height = 15, y = 690;
+	public int width = 90, height = 15, y = 690;
 
 	public Stick(String img, int x) {
 		super(img);

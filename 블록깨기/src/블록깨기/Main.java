@@ -22,10 +22,10 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Main extends JFrame {
+	// 클래스 관련
 	Robot robot;
 	StatePanel statePanel;
 	GamePanel gamePanel;
-//	Ball ball;
 	Stick stick;
 	Item item;
 
@@ -38,7 +38,7 @@ public class Main extends JFrame {
 	final int INIT_MOUSE_Y = 890;
 	final int DEADLINE_HEIGHT = 550;
 	final int BLOCKDOWNDELAY = 10;
-	final int ITEM_DEADLINE = 710;
+	final int ITEM_DEADLINE = 720;
 	int lifeCount = 2;
 
 	// 이미지 관련
@@ -272,7 +272,7 @@ public class Main extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			for (Ball ball : ballList)
 				ball.x = stick.x + 33;
-			
+
 			gamePanel.repaint();
 		}
 	}
@@ -305,22 +305,16 @@ public class Main extends JFrame {
 		@Override
 		public void mouseExited(MouseEvent e) {
 		}
-
 	}
 	/* Listener 끝 */
 
 	/* 기능구현 메소드 시작 */
-	public void endGame() {
-		/*
-		 * 구현필요
-		 */
-	}
-
 	public void initBallList() {
 		this.ballList.clear();
 		this.ballList.add(new Ball(ballImgURL, FRAME_WIDTH / 2, stick.y - 20, stick));
 	}
 
+	// 공이 떨어진 경우
 	public void isBallFall() {
 		// 모든 공에 대해서
 		for (Ball ball : ballList)
@@ -360,14 +354,17 @@ public class Main extends JFrame {
 		}
 	}
 
+	// 벽돌 깬 경우
 	public void isBreakBlock() {
+		int probability = 5;
+
 		for (ArrayList<Block> firstDimension : blockList) {
 			for (Block block : firstDimension) {
 				for (Ball ball : ballList) {
 					if (block.isBreak(ball)) {
 						// 20% 확률로 아이템 드랍
 						// 0~3 중 난수를 주어 아이템 종류 결정
-						if (((int) (Math.random() * 10)) < 10)
+						if (((int) (Math.random() * 10)) < probability)
 							itemList.add(new Item(block.getCenterPoint(), (int) (Math.random() * 4), stick));
 
 						// 점수 추가
@@ -394,13 +391,46 @@ public class Main extends JFrame {
 		for (Item item : itemList) {
 			item.itemDrop();
 
-			// 일정 위치 지나면 삭제
-			if (item.y >= ITEM_DEADLINE) {
+			// 먹으면
+			if ((stick.x <= item.x && item.x <= stick.x + stick.width)
+					&& (stick.y <= item.y && item.y <= stick.y + stick.height)) {
+				switch (item.type) {
+				// ballMinus
+				case 0:
+					if (ballList.size() > 1)
+						ballList.remove(ballList.size() - 1);
+					break;
+				// ballPlus
+				case 1:
+					ballList.add(new Ball(ballImgURL, (int) (Math.random() * FRAME_WIDTH / 2 + 250),
+							(int) (Math.random() * FRAME_HEIGHT / 2 + 400), stick));
+					break;
+				// stickMinus
+				case 2:
+					stick.width -= 5;
+					break;
+				// stickPlus
+				case 3:
+					stick.width += 5;
+					break;
+				}
+
 				toRemoveItem.add(item);
-				for (Item removeItem : toRemoveItem)
-					itemList.remove(removeItem);
 			}
+
+			// 일정 위치 지나면 삭제
+			if (item.y >= ITEM_DEADLINE)
+				toRemoveItem.add(item);
 		}
+
+		for (Item removeItem : toRemoveItem)
+			itemList.remove(removeItem);
+	}
+
+	public void endGame() {
+		/*
+		 * 구현필요
+		 */
 	}
 	/* 기능구현 메소드 끝 */
 

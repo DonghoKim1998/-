@@ -9,7 +9,6 @@ public class Item extends ImageIcon {
 	int x, y, type;
 	final int width = 25, height = 25;
 	ImageIcon itemImg;
-	Stick stick;
 
 	String ballMinus = "res/items/ballMinus.png";
 	String ballPlus = "res/items/ballPlus.png";
@@ -20,7 +19,6 @@ public class Item extends ImageIcon {
 		this.x = p.x;
 		this.y = p.y;
 		this.type = type;
-		this.stick = stick;
 
 		switch (type) {
 		case 0:
@@ -41,10 +39,6 @@ public class Item extends ImageIcon {
 
 	public void itemDrop() {
 		this.y += 3;
-		
-		if(this.y <= 770) {
-			
-		}
 	}
 	
 //	public int isGetItem() {

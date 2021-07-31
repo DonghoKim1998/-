@@ -81,7 +81,6 @@ public class Block extends ImageIcon {
 
 			return true;
 		}
-
 		return false;
 	}
 
