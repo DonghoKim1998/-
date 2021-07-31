@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 
 public class Block extends ImageIcon {
 	int x, y;
-	private final int width = 50, height = 50;
+	final int width = 50, height = 50;
 
 	String redBlockURL = "res/a.png";
 	String orangeBlockURL = "res/b.png";

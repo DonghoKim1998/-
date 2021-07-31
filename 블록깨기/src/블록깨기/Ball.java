@@ -11,7 +11,8 @@ public class Ball extends ImageIcon {
 	int moveX, moveY; // 20까지는 인식 가능
 	final int width = 22, height = 22;
 	int speed = 8; // 초기 스피드: 8
-
+	final int BALLDEADLINE_Y = 760;
+	
 	public Ball(String img, int x, int y, Stick stick) {
 		super(img);
 		this.x = x;
@@ -52,9 +53,7 @@ public class Ball extends ImageIcon {
 
 		// stick과 부딪혔는지 판단하여 true인 경우 stick의 위치에 따라 다르게 튀김
 		if (isCollisionWithStick()) {
-			if (stick.x - 12 < this.x && this.x <= stick.x)
-				moveX = -speed;
-			if (stick.x < this.x && this.x <= stick.x + 12)
+			if (stick.x - 12 < this.x && this.x <= stick.x + 12)
 				moveX = -speed;
 			if (stick.x + 12 < this.x && this.x < stick.x + 24)
 				moveX = -(speed / 2);
@@ -66,7 +65,7 @@ public class Ball extends ImageIcon {
 				moveX = 1;
 			if (stick.x + 60 < this.x && this.x <= stick.x + 72)
 				moveX = speed / 2;
-			if (stick.x + 72 < this.x && this.x <= stick.x + 84)
+			if (stick.x + 72 < this.x && this.x <= stick.x + 96)
 				moveX = speed;
 
 			moveY *= -1;
@@ -75,7 +74,7 @@ public class Ball extends ImageIcon {
 
 	// 공이 deadLine까지 떨어졌는지 판단하는 메소드
 	public boolean isFall() {
-		if (this.y >= Main.DEADLINE_HEIGHT - 20)
+		if (this.y >= BALLDEADLINE_Y - 15)
 			return false;
 		else
 			return true;

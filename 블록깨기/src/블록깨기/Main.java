@@ -35,14 +35,15 @@ public class Main extends JFrame {
 	final int GAMEPANEL_HEIGHT = 820;
 	final int INIT_MOUSE_X = 950;
 	final int INIT_MOUSE_Y = 890;
-	final static int DEADLINE_HEIGHT = 760;
+	final int DEADLINE_HEIGHT = 550;
+	final int BLOCKDOWNDELAY = 10;
 
 	// 이미지 관련
 	String stickImgURL = "res/stick.png";
 	String ballImgURL = "res/ball.png";
 	ImageIcon ballImg = new ImageIcon(ballImgURL);
 	ImageIcon backGroundImg = new ImageIcon("res/game_background.png");
-	ImageIcon deadLine = new ImageIcon("res/deadLine.png");
+	ImageIcon deadLineImg = new ImageIcon("res/deadLine.png");
 	ImageIcon statePanelBackImg = new ImageIcon("res/statePanelBackImg.png");
 
 	// 생명을 표시하는 Life Image ArrayList
@@ -189,10 +190,12 @@ public class Main extends JFrame {
 		public void paintComponent(Graphics g) {
 			g.setColor(Color.white);
 			g.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+			
 			// GamePanel 배경 그리기
 //			g.drawImage(backGroundImg.getImage(), 0, 0, FRAME_WIDTH, GAMEPANEL_HEIGHT, null);
+			
 			// deadLine 그리기
-			g.drawImage(deadLine.getImage(), 0, DEADLINE_HEIGHT, FRAME_WIDTH, 5, null);
+			g.drawImage(deadLineImg.getImage(), 0, 550, FRAME_WIDTH, 5, null);
 
 			// stick 그리기
 			try {
@@ -251,6 +254,14 @@ public class Main extends JFrame {
 			// Score 설정
 			score += 1;
 			statePanel.score.setText("Score  " + String.format("%d", score));
+			
+			// 10초마다 블럭들이 내려옴
+			if(time % BLOCKDOWNDELAY == 0) {
+				for(ArrayList<Block> firstDimension : blockList) {
+					for(Block block : firstDimension)
+						block.y += 24;
+				}
+			}
 		}
 	}
 
@@ -291,14 +302,22 @@ public class Main extends JFrame {
 			// 부딪혔을 경우 해당 block 객체 삭제
 			for (ArrayList<Block> firstDimension : blockList) {
 				for (Block block : firstDimension) {
+					// 공과 부딪힌 경우
 					if (block.isBreak(ball)) {
-						// 깨면 점수추가
+						// 점수 추가
 						statePanelTimerClass.score += 5;
 						statePanel.score.setText("Score  " + String.format("%d", statePanelTimerClass.score));
 						
 						// ConcurrentModificationException 방지
 						toRemoveBlock.add(block);
 					}
+					
+					// 블럭이 deadLine을 넘은 경우
+					if(block.y + block.height >= 550)
+						/*
+						 *  게임종료 메소드 만들어 추가하기 !!!!!!!!!!!!!!
+						 */
+						System.exit(1);
 				}
 
 				for (Block Removeblock : toRemoveBlock)
