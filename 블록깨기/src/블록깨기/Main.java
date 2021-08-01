@@ -1,20 +1,23 @@
 package 블록깨기;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,6 +36,7 @@ public class Main extends JFrame {
 	final int FRAME_HEIGHT = 880;
 	final int STATEPANEL_HEIGHT = 60;
 	final int GAMEPANEL_HEIGHT = 820;
+	final int TEXT_HEIGHT = 15;
 	// 초기 마우스 좌표값
 	final int INIT_MOUSE_X = 950;
 	final int INIT_MOUSE_Y = 890;
@@ -47,17 +51,23 @@ public class Main extends JFrame {
 	int probability = 3;
 
 	// Image
-	// 이미지 관련
 	String stickImgURL = "res/stick.png";
 	String ballImgURL = "res/ball.png";
+	ImageIcon ballImg = new ImageIcon(ballImgURL);
+	ImageIcon backGroundImg = new ImageIcon("res/backGround.jpg");
+	ImageIcon statePanelBackImg = new ImageIcon("res/statePanel.jpg");
+	ImageIcon deadLineImg = new ImageIcon("res/deadLine.png");
 	String stickPlusURL = "res/items/stickPlus";
 	String stickMinusURL = "res/items/stickMinus";
 	String ballPlusURL = "res/items/ballPlus";
 	String ballMinusURL = "res/items/ballMinus";
-	ImageIcon ballImg = new ImageIcon(ballImgURL);
-	ImageIcon backGroundImg = new ImageIcon("res/game_background.png");
-	ImageIcon deadLineImg = new ImageIcon("res/deadLine.png");
-	ImageIcon statePanelBackImg = new ImageIcon("res/statePanelBackImg.png");
+
+	// Sounds
+	File gameBGM = new File("res/sounds/GAME BGM.wav");
+	File getItem = new File("res/sounds/item.wav");
+	File crash = new File("res/sounds/crash.wav");
+	File fail = new File("res/sounds/fail.wav");
+	Clip gameBGMClip, getItemClip, crashClip, failClip;
 
 	// ArrayList
 	// 공 저장 ArrayList
@@ -139,6 +149,24 @@ public class Main extends JFrame {
 		gamePanel.setBounds(0, 60, FRAME_WIDTH, GAMEPANEL_HEIGHT);
 		gamePanel.addMouseListener(new MyMouseListener());
 		this.getContentPane().add(gamePanel);
+
+		// sound 초기화 및 gameBGM 재생
+		try {
+			gameBGMClip = AudioSystem.getClip();
+			gameBGMClip.open(AudioSystem.getAudioInputStream(gameBGM));
+			gameBGMClip.loop(Clip.LOOP_CONTINUOUSLY);
+			gameBGMClip.start();
+
+			getItemClip = AudioSystem.getClip();
+			getItemClip.open(AudioSystem.getAudioInputStream(getItem));
+
+			crashClip = AudioSystem.getClip();
+			crashClip.open(AudioSystem.getAudioInputStream(crash));
+
+			failClip = AudioSystem.getClip();
+			failClip.open(AudioSystem.getAudioInputStream(fail));
+		} catch (Exception exception) {
+		}
 	}
 	/* 메인 프레임 끝 */
 
@@ -157,23 +185,23 @@ public class Main extends JFrame {
 		public void setComponent() {
 			// life
 			life = new JLabel("Life");
-			life.setBounds(30, 15, 50, 35);
+			life.setBounds(30, TEXT_HEIGHT, 50, 35);
 			life.setFont(new Font("Rix짱구 M", Font.ITALIC, 30));
-			life.setForeground(Color.black);
+			life.setForeground(Color.white);
 			add(life);
 
 			// playingTime
 			playingTime = new JLabel("Time 00:00");
-			playingTime.setBounds(200, 15, 170, 35);
+			playingTime.setBounds(200, TEXT_HEIGHT, 170, 35);
 			playingTime.setFont(new Font("Rix짱구 M", Font.ITALIC, 30));
-			playingTime.setForeground(Color.black);
+			playingTime.setForeground(Color.white);
 			add(playingTime);
 
 			// score
 			score = new JLabel("Score");
-			score.setBounds(390, 15, 170, 35);
+			score.setBounds(390, TEXT_HEIGHT, 170, 35);
 			score.setFont(new Font("Rix짱구 M", Font.ITALIC, 30));
-			score.setForeground(Color.black);
+			score.setForeground(Color.white);
 			add(score);
 
 			// life 2개로 초기화
@@ -347,8 +375,13 @@ public class Main extends JFrame {
 		// 모든 공에 대해서
 		for (Ball ball : ballList)
 			// 떨어졌는지 확인, 떨어진 경우 toRemoveBall에 객체 삽입
-			if (ball.move())
+			if (ball.move()) {
+				// 효과음 재생
+				failClip.start();
+				failClip.setFramePosition(0);
+
 				toRemoveBall.add(ball);
+			}
 
 		// 떨어진 공 삭제
 		for (Ball removeBall : toRemoveBall)
@@ -361,6 +394,7 @@ public class Main extends JFrame {
 
 			// life가 모두 소진 시 게임 초기화
 			if (lifeCount == 0) {
+				gameBGMClip.setFramePosition(0);
 				resetGame();
 				return;
 			}
@@ -390,6 +424,10 @@ public class Main extends JFrame {
 			for (Block block : firstDimension) {
 				for (Ball ball : ballList) {
 					if (block.isBreak(ball)) {
+						// 효과음 재생
+						crashClip.start();
+						crashClip.setFramePosition(0);
+
 						// 30% 확률로 아이템 드랍
 						// 0~3 중 난수를 주어 아이템 종류 결정
 						if (((int) (Math.random() * 10)) < probability)
@@ -421,6 +459,10 @@ public class Main extends JFrame {
 			// sitck에 닿으면
 			if ((stick.x <= item.x && item.x <= stick.x + stick.width)
 					&& (stick.y <= item.y && item.y <= stick.y + stick.height)) {
+				// 효과음 재생
+				getItemClip.start();
+				getItemClip.setFramePosition(0);
+
 				switch (item.type) {
 				// ballMinus
 				case 0:
@@ -430,7 +472,7 @@ public class Main extends JFrame {
 				// ballPlus
 				case 1:
 					ballList.add(new Ball(ballImgURL, (int) (Math.random() * FRAME_WIDTH / 2 + 250),
-							(int) (Math.random() * FRAME_HEIGHT / 2 + 400), stick));
+							(int) (Math.random() * FRAME_HEIGHT / 2 + 300), stick));
 					break;
 				// stickMinus
 				case 2:
@@ -460,7 +502,7 @@ public class Main extends JFrame {
 		// 타이머 정지
 		oneSecondTimer.stop();
 		oneMilliSecondTimer.stop();
-		
+
 		// 데이터 초기화
 		statePanel.playingTime.setText("Time 00:00");
 		statePanel.score.setText("Score ");
@@ -479,7 +521,7 @@ public class Main extends JFrame {
 			blockList.add(tempList);
 		}
 		lifeCount = 2;
-		
+
 		// 공 초기화
 		initBallList();
 		// 다시 시작
