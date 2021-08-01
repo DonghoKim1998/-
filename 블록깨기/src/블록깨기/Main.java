@@ -53,14 +53,16 @@ public class Main extends JFrame {
 	// Image
 	String stickImgURL = "res/stick.png";
 	String ballImgURL = "res/ball.png";
-	ImageIcon ballImg = new ImageIcon(ballImgURL);
-	ImageIcon backGroundImg = new ImageIcon("res/backGround.jpg");
-	ImageIcon statePanelBackImg = new ImageIcon("res/statePanel.jpg");
-	ImageIcon deadLineImg = new ImageIcon("res/deadLine.png");
 	String stickPlusURL = "res/items/stickPlus";
 	String stickMinusURL = "res/items/stickMinus";
 	String ballPlusURL = "res/items/ballPlus";
 	String ballMinusURL = "res/items/ballMinus";
+	String blockA = "res/blocks/blockA.png";
+	ImageIcon ballImg = new ImageIcon(ballImgURL);
+	ImageIcon backGroundImg = new ImageIcon("res/backGround.jpg");
+	ImageIcon statePanelBackImg = new ImageIcon("res/statePanel.jpg");
+	ImageIcon deadLineImg = new ImageIcon("res/deadLine.png");
+	ImageIcon iconImage = new ImageIcon("res/blocks/blockA.png");
 
 	// Sounds
 	File gameBGM = new File("res/sounds/GAME BGM.wav");
@@ -105,6 +107,7 @@ public class Main extends JFrame {
 	// (1) 생성자: Frame 설정
 	public Main() {
 		this.setTitle("Break COVID-19");
+		this.setIconImage(iconImage.getImage());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 		this.setLocationRelativeTo(null);
