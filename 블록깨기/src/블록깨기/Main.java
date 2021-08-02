@@ -63,13 +63,16 @@ public class Main extends JFrame {
 	ImageIcon statePanelBackImg = new ImageIcon("res/statePanel.jpg");
 	ImageIcon deadLineImg = new ImageIcon("res/deadLine.png");
 	ImageIcon iconImage = new ImageIcon("res/blocks/blockA.png");
+	ImageIcon endImage = new ImageIcon("res/mt.jpg");
+	JLabel endImgLabel = new JLabel(endImage);
 
 	// Sounds
 	File gameBGM = new File("res/sounds/GAME BGM.wav");
 	File getItem = new File("res/sounds/item.wav");
 	File crash = new File("res/sounds/crash.wav");
 	File fail = new File("res/sounds/fail.wav");
-	Clip gameBGMClip, getItemClip, crashClip, failClip;
+	File success = new File("res/sounds/success.wav");
+	Clip gameBGMClip, getItemClip, crashClip, failClip, successClip;
 
 	// ArrayList
 	// 공 저장 ArrayList
@@ -168,8 +171,13 @@ public class Main extends JFrame {
 
 			failClip = AudioSystem.getClip();
 			failClip.open(AudioSystem.getAudioInputStream(fail));
+			
+			successClip = AudioSystem.getClip();
+			successClip.open(AudioSystem.getAudioInputStream(success));
 		} catch (Exception exception) {
 		}
+		
+		endImgLabel.setBounds(0,150,FRAME_WIDTH,500);
 	}
 	/* 메인 프레임 끝 */
 
@@ -238,9 +246,9 @@ public class Main extends JFrame {
 
 			// blockList에 Block 객체 삽입
 			// 6행 10열
-			for (int i = 0; i < 6; i++) {
+			for (int i = 0; i < 1; i++) {
 				tempList = new ArrayList<Block>();
-				for (int j = 0; j < 10; j++)
+				for (int j = 0; j < 1; j++)
 					tempList.add(new Block((j * 51) + 15, (i * 24) + 34));
 				blockList.add(tempList);
 			}
@@ -318,6 +326,9 @@ public class Main extends JFrame {
 			isBallFall();
 			// block이 깨졌는지 확인
 			isBreakBlock();
+			// 벽돌이 모두 없어졌는지 확인
+			isClear();
+			System.out.println(blockList.get(0).size());
 
 			statePanel.repaint();
 			gamePanel.repaint();
@@ -529,6 +540,21 @@ public class Main extends JFrame {
 		initBallList();
 		// 다시 시작
 		initPaintTimer.start();
+	}
+
+	public void isClear() {
+		if(blockList.get(0).size() == 0) {
+			oneSecondTimer.stop();
+			oneMilliSecondTimer.stop();
+			
+			gameBGMClip.stop();
+			successClip.start();
+			
+			statePanel.setVisible(false);
+			gamePanel.setVisible(false);
+			
+			this.add(endImgLabel);
+		}
 	}
 	/* 기능구현 메소드 끝 */
 
